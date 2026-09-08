@@ -990,12 +990,56 @@
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
-                    <div class="sm:col-span-5">
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Cari Nama Pelanggan / Kasir / ID:</label>
-                        <input type="text" id="order-search-input" placeholder="Ketik kata kunci pencarian..." oninput="renderOrdersLogTable()" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                <!-- OWNER / ADMIN PERFORMANCE SUMMARY CARD -->
+                <div id="owner-performance-card" class="bg-gradient-to-r from-amber-500/10 via-indigo-500/10 to-blue-500/10 border border-amber-200 p-4 rounded-xl space-y-3 hidden">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-amber-200/60 pb-2">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-amber-600 text-white text-[10px] font-extrabold px-2 py-0.5 rounded uppercase">Laporan Kinerja Karyawan</span>
+                            <h3 id="perf-summary-title" class="font-extrabold text-slate-900 text-xs sm:text-sm">Kinerja Semua Karyawan</h3>
+                        </div>
+                        <span id="perf-summary-range-badge" class="text-[11px] font-bold text-amber-900 bg-amber-100 px-2.5 py-0.5 rounded-full border border-amber-300">Minggu Ini (7 Hari Terakhir)</span>
                     </div>
-                    <div class="sm:col-span-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                        <div class="bg-white/80 p-2.5 rounded-lg border border-slate-200 text-center">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase">Total Pcs Selesai</p>
+                            <p id="perf-completed-pcs" class="text-lg font-black text-emerald-600 font-mono">0 Pcs</p>
+                        </div>
+                        <div class="bg-white/80 p-2.5 rounded-lg border border-slate-200 text-center">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase">Sedang Diproses</p>
+                            <p id="perf-process-pcs" class="text-lg font-black text-amber-600 font-mono">0 Pcs</p>
+                        </div>
+                        <div class="bg-white/80 p-2.5 rounded-lg border border-slate-200 text-center">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase">Total Orderan</p>
+                            <p id="perf-total-orders" class="text-lg font-black text-indigo-600 font-mono">0 Order</p>
+                        </div>
+                        <div class="bg-white/80 p-2.5 rounded-lg border border-slate-200 text-center">
+                            <p class="text-[10px] text-slate-500 font-bold uppercase">Total Omset Pengerjaan</p>
+                            <p id="perf-total-omset" class="text-lg font-black text-brand-600 font-mono">Rp 0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div class="sm:col-span-3">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Cari Pelanggan / ID:</label>
+                        <input type="text" id="order-search-input" placeholder="Ketik kata kunci..." oninput="renderOrdersLogTable()" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold">
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Filter Karyawan Pekerja:</label>
+                        <select id="order-worker-filter" onchange="renderOrdersLogTable()" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
+                            <option value="all">Semua Karyawan</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-3">
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Filter Periode Waktu:</label>
+                        <select id="order-date-filter" onchange="renderOrdersLogTable()" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
+                            <option value="all">Semua Waktu</option>
+                            <option value="today">Hari Ini</option>
+                            <option value="week" selected>Minggu Ini (7 Hari Terakhir)</option>
+                            <option value="month">Bulan Ini (30 Hari Terakhir)</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-3">
                         <label class="block text-[11px] font-bold text-slate-600 mb-1">Filter Status Pesanan:</label>
                         <select id="order-status-filter" onchange="renderOrdersLogTable()" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold">
                             <option value="all">Semua Status</option>
@@ -1004,11 +1048,6 @@
                             <option value="Selesai">✅ Selesai</option>
                             <option value="Dibatalkan">❌ Dibatalkan</option>
                         </select>
-                    </div>
-                    <div class="sm:col-span-3 flex items-end">
-                        <div class="text-xs text-slate-600 font-bold w-full text-right py-1.5">
-                            Total Transaksi: <span id="orders-count-badge" class="font-extrabold text-brand-600">0</span>
-                        </div>
                     </div>
                 </div>
 
@@ -2619,25 +2658,111 @@
             const container = document.getElementById('orders-table-body');
             const searchInput = document.getElementById('order-search-input');
             const statusFilter = document.getElementById('order-status-filter');
+            const workerFilter = document.getElementById('order-worker-filter');
+            const dateFilter = document.getElementById('order-date-filter');
             const countBadge = document.getElementById('orders-count-badge');
+            const perfCard = document.getElementById('owner-performance-card');
 
             if (!container) return;
 
             const orders = window.appState.ordersLog || [];
             const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
             const filterVal = statusFilter ? statusFilter.value : 'all';
+            const selectedWorker = workerFilter ? workerFilter.value : 'all';
+            const selectedDateRange = dateFilter ? dateFilter.value : 'week';
+            const isOwnerMode = window.appState.currentRole === 'owner';
             const isProduksiMode = window.appState.currentRole === 'produksi';
+
+            if (workerFilter) {
+                const currentWorkerVal = workerFilter.value;
+                const uniqueWorkerNames = new Set();
+                (window.appState.employees || []).forEach(e => uniqueWorkerNames.add(e.name));
+                (window.appState.sales || []).forEach(s => uniqueWorkerNames.add(s.name));
+                (window.appState.production || []).forEach(p => uniqueWorkerNames.add(p.name));
+                orders.forEach(o => {
+                    if (o.cashierName) uniqueWorkerNames.add(o.cashierName);
+                    if (o.completedBy) uniqueWorkerNames.add(o.completedBy);
+                    if (o.processedBy) uniqueWorkerNames.add(o.processedBy);
+                });
+
+                let workerOptionsHtml = `<option value="all">Semua Karyawan</option>`;
+                uniqueWorkerNames.forEach(name => {
+                    if (name) {
+                        workerOptionsHtml += `<option value="${name}" ${currentWorkerVal === name ? 'selected' : ''}>${name}</option>`;
+                    }
+                });
+                workerFilter.innerHTML = workerOptionsHtml;
+            }
+
+            const now = Date.now();
+            const oneDayMs = 24 * 60 * 60 * 1000;
 
             let filtered = orders.filter(o => {
                 const matchQuery = !query || (o.customerName && o.customerName.toLowerCase().includes(query)) || (o.id && o.id.toLowerCase().includes(query)) || (o.cashierName && o.cashierName.toLowerCase().includes(query));
                 const matchStatus = filterVal === 'all' || o.status === filterVal;
-                return matchQuery && matchStatus;
+
+                // Date filter logic
+                let matchDate = true;
+                if (selectedDateRange === 'today') {
+                    const todayStr = new Date().toDateString();
+                    const orderDateStr = o.timestamp ? new Date(o.timestamp).toDateString() : '';
+                    matchDate = todayStr === orderDateStr;
+                } else if (selectedDateRange === 'week') {
+                    matchDate = o.timestamp ? (now - o.timestamp) <= (7 * oneDayMs) : true;
+                } else if (selectedDateRange === 'month') {
+                    matchDate = o.timestamp ? (now - o.timestamp) <= (30 * oneDayMs) : true;
+                }
+
+                // Worker filter logic
+                let matchWorker = true;
+                if (selectedWorker !== 'all') {
+                    matchWorker = (o.completedBy === selectedWorker) || (o.processedBy === selectedWorker) || (o.cashierName === selectedWorker);
+                }
+
+                return matchQuery && matchStatus && matchDate && matchWorker;
             });
+
+            if (isOwnerMode && perfCard) {
+                perfCard.classList.remove('hidden');
+
+                let totalCompletedPcs = 0;
+                let totalInProcessPcs = 0;
+                let totalOmset = 0;
+
+                filtered.forEach(o => {
+                    const orderItemPcs = (o.items || []).reduce((sum, item) => sum + (parseInt(item.quantity) || 1), 0);
+                    
+                    if (selectedWorker !== 'all') {
+                        if (o.completedBy === selectedWorker && o.status === 'Selesai') {
+                            totalCompletedPcs += orderItemPcs;
+                        }
+                        if (o.processedBy === selectedWorker && o.status === 'Diproses') {
+                            totalInProcessPcs += orderItemPcs;
+                        }
+                    } else {
+                        if (o.status === 'Selesai') totalCompletedPcs += orderItemPcs;
+                        if (o.status === 'Diproses') totalInProcessPcs += orderItemPcs;
+                    }
+
+                    totalOmset += (o.grandTotal || 0);
+                });
+
+                const rangeLabel = selectedDateRange === 'today' ? 'Hari Ini' : selectedDateRange === 'week' ? 'Minggu Ini (7 Hari Terakhir)' : selectedDateRange === 'month' ? 'Bulan Ini (30 Hari Terakhir)' : 'Semua Waktu';
+
+                updateElemText('perf-summary-title', selectedWorker !== 'all' ? `Laporan Kinerja: ${selectedWorker}` : 'Kinerja Semua Karyawan');
+                updateElemText('perf-summary-range-badge', rangeLabel);
+                updateElemText('perf-completed-pcs', `${totalCompletedPcs} Pcs`);
+                updateElemText('perf-process-pcs', `${totalInProcessPcs} Pcs`);
+                updateElemText('perf-total-orders', `${filtered.length} Order`);
+                updateElemText('perf-total-omset', formatRp(totalOmset));
+            } else if (perfCard) {
+                perfCard.classList.add('hidden');
+            }
 
             if (countBadge) countBadge.innerText = filtered.length;
 
             if (filtered.length === 0) {
-                container.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada pesanan tersimpan.</td></tr>`;
+                container.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Tidak ada pesanan yang sesuai dengan filter.</td></tr>`;
                 return;
             }
 
