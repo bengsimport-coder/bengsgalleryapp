@@ -2684,16 +2684,19 @@
                     </td>
                     <td class="p-3 font-bold text-slate-800">${o.customerName || 'Pelanggan'}</td>
                     <td class="p-3 font-medium text-slate-600">${o.cashierName || 'Kasir'}</td>
-                    <td class="p-3 text-xs">
-                        <div class="space-y-1">
+                    <td class="p-2 text-xs min-w-[190px] max-w-[260px]">
+                        <div class="max-h-32 overflow-y-auto space-y-1 pr-1">
                             ${(o.items || []).map(i => `
-                                <div class="bg-amber-50/60 p-2 rounded-lg border border-amber-200/60 space-y-0.5">
-                                    <p class="font-extrabold text-slate-900">• ${i.name} <span class="text-brand-700 font-mono">(x${i.quantity} Pcs)</span></p>
-                                    <div class="text-[10px] text-slate-600 font-medium flex flex-wrap gap-1">
-                                        ${i.useLinen ? '<span class="bg-amber-100 text-amber-900 px-1 rounded font-bold">+ Linen</span>' : ''}
-                                        ${i.depth3D !== 'none' ? `<span class="bg-blue-100 text-blue-900 px-1 rounded font-bold">3D ${i.depth3D}</span>` : ''}
-                                        ${i.frameCode ? `<span class="bg-indigo-100 text-indigo-900 px-1 rounded font-bold uppercase">Kode: ${i.frameCode}</span>` : ''}
-                                        ${i.notes ? `<span class="bg-rose-100 text-rose-900 px-1 rounded font-bold">Catatan: ${i.notes}</span>` : ''}
+                                <div class="bg-slate-50 p-1.5 rounded-lg border border-slate-200 text-[11px] space-y-0.5">
+                                    <div class="flex items-center justify-between font-bold text-slate-800">
+                                        <span class="truncate pr-1">• ${i.name}</span>
+                                        <span class="text-brand-700 font-mono text-[10px] whitespace-nowrap">x${i.quantity}</span>
+                                    </div>
+                                    <div class="text-[9px] text-slate-600 font-semibold flex flex-wrap gap-1 pt-0.5">
+                                        ${i.useLinen ? '<span class="bg-amber-100 text-amber-900 px-1 rounded">+Linen</span>' : ''}
+                                        ${i.depth3D !== 'none' ? `<span class="bg-blue-100 text-blue-900 px-1 rounded">3D ${i.depth3D}</span>` : ''}
+                                        ${i.frameCode ? `<span class="bg-indigo-100 text-indigo-900 px-1 rounded uppercase">Kode: ${i.frameCode}</span>` : ''}
+                                        ${i.notes ? `<span class="bg-rose-100 text-rose-900 px-1 rounded">Catatan: ${i.notes}</span>` : ''}
                                     </div>
                                 </div>
                             `).join('')}
@@ -2704,6 +2707,20 @@
                         <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold ${o.paymentStatus === 'dp' ? 'bg-amber-100 text-amber-800 border border-amber-200' : 'bg-emerald-100 text-emerald-800 border border-emerald-200'}">
                             ${o.paymentStatus === 'dp' ? `DP (${formatRp(o.dpAmount || 0)})` : 'LUNAS'}
                         </span>
+                    </td>
+                    <td class="p-3 text-center">
+                        ${isProduksiMode ? statusBadge : `
+                            <select onchange="updateOrderStatusCloud('${o.id}', this.value)" class="px-2 py-1 bg-slate-100 border border-slate-300 rounded text-xs font-bold text-slate-800">
+                                <option value="Baru" ${o.status === 'Baru' ? 'selected' : ''}>🔥 Baru</option>
+                                <option value="Diproses" ${o.status === 'Diproses' ? 'selected' : ''}>⏳ Diproses</option>
+                                <option value="Selesai" ${o.status === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
+                                <option value="Dibatalkan" ${o.status === 'Dibatalkan' ? 'selected' : ''}>❌ Batal</option>
+                            </select>
+                        `}
+                        ${o.status === 'Selesai' ? `<p class="text-[10px] font-bold text-emerald-700 mt-1 leading-tight"><i class="fa-solid fa-user-check text-[9px] mr-1"></i>Diselesaikan ${o.completedBy || 'Karyawan'}</p>` : ''}
+                        ${o.status === 'Diproses' ? `<p class="text-[10px] font-bold text-amber-700 mt-1 leading-tight"><i class="fa-solid fa-user-gear text-[9px] mr-1"></i>Diproses ${o.processedBy || 'Karyawan'}</p>` : ''}
+                        ${o.status === 'Baru' ? `<p class="text-[10px] font-semibold text-rose-500 mt-1 leading-tight"><i class="fa-solid fa-clock text-[9px] mr-1"></i>Menunggu Pengerjaan</p>` : ''}
+                        ${o.status === 'Dibatalkan' ? `<p class="text-[10px] font-semibold text-slate-500 mt-1 leading-tight"><i class="fa-solid fa-user-xmark text-[9px] mr-1"></i>Dibatalkan ${o.canceledBy || ''}</p>` : ''}
                     </td>
                     <td class="p-3 text-center">
                         ${isProduksiMode ? statusBadge : `
@@ -2728,12 +2745,23 @@
 
         window.updateOrderStatusCloud = async function(orderId, newStatus) {
             try {
+                const workerName = window.appState.activeCashierName || 'Karyawan';
+                const updateData = { status: newStatus };
+                if (newStatus === 'Diproses') updateData.processedBy = workerName;
+                if (newStatus === 'Selesai') updateData.completedBy = workerName;
+                if (newStatus === 'Dibatalkan') updateData.canceledBy = workerName;
+
                 if (db && isFirebaseConnected) {
                     const orderDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId);
-                    await setDoc(orderDocRef, { status: newStatus }, { merge: true });
+                    await setDoc(orderDocRef, updateData, { merge: true });
                 }
                 const localOrder = window.appState.ordersLog.find(o => o.id === orderId);
-                if (localOrder) localOrder.status = newStatus;
+                if (localOrder) {
+                    localOrder.status = newStatus;
+                    if (newStatus === 'Diproses') localOrder.processedBy = workerName;
+                    if (newStatus === 'Selesai') localOrder.completedBy = workerName;
+                    if (newStatus === 'Dibatalkan') localOrder.canceledBy = workerName;
+                }
                 renderOrdersLogTable();
                 showToast(`Status pesanan diperbarui ke: ${newStatus}`, 'success');
             } catch(e) {
