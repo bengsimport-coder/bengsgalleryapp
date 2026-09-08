@@ -223,24 +223,14 @@
             </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-wrap items-center justify-between gap-2 border-t border-slate-800/80 pt-1.5 pb-2">
-            <div class="flex space-x-1.5 sm:space-x-2 overflow-x-auto py-1">
-                <button id="nav-tab-custom" onclick="switchMainTab('custom')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all bg-brand-600 text-white shadow-sm whitespace-nowrap">
-                    <i class="fa-solid fa-crop-simple"></i>
-                    <span>Kalkulator Custom</span>
-                </button>
-                <button id="nav-tab-pricelist" onclick="switchMainTab('pricelist')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap">
-                    <i class="fa-solid fa-table-list"></i>
-                    <span>Daftar Harga Standar</span>
-                </button>
-                <button id="nav-tab-orders" onclick="switchMainTab('orders')" class="relative px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap">
-                    <i class="fa-solid fa-clock-rotate-left"></i>
-                    <span>Pesanan Realtime</span>
-                    <span id="nav-unread-orders-badge" class="bg-rose-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full hidden">0</span>
-                </button>
+        <!-- BARIS UNDO, REDO, EXPORT & IMPORT DATA (DIATAS KALKULATOR CUSTOM) -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 border-t border-slate-800/80 pt-2 pb-1">
+            <div class="text-[11px] font-bold text-slate-400 flex items-center space-x-1.5">
+                <i class="fa-solid fa-sliders text-brand-400"></i>
+                <span>Aksi & Cadangan Data</span>
             </div>
 
-            <div class="flex items-center space-x-1.5">
+            <div class="flex items-center space-x-1.5 flex-wrap">
                 <div class="flex items-center bg-slate-800 border border-slate-700 rounded-lg p-0.5 shadow-sm">
                     <button type="button" id="btn-global-undo" onclick="undoState()" disabled title="Undo (Ctrl+Z)" class="px-2.5 py-1 text-xs font-bold text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed flex items-center space-x-1 transition-colors">
                         <i class="fa-solid fa-rotate-left text-[11px]"></i>
@@ -262,6 +252,25 @@
                 <button type="button" onclick="document.getElementById('import-json-file-input').click()" title="Import File Backup Data Toko JSON" class="px-2.5 py-1.5 bg-amber-600 hover:bg-amber-500 text-white border border-amber-500 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-colors shadow-sm">
                     <i class="fa-solid fa-file-import text-[11px]"></i>
                     <span>Import Data Toko</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- BARIS TAB NAVIGASI UTAMA -->
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between border-t border-slate-800/50 py-1.5">
+            <div class="flex space-x-1.5 sm:space-x-2 overflow-x-auto py-0.5 w-full">
+                <button id="nav-tab-custom" onclick="switchMainTab('custom')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all bg-brand-600 text-white shadow-sm whitespace-nowrap">
+                    <i class="fa-solid fa-crop-simple"></i>
+                    <span>Kalkulator Custom</span>
+                </button>
+                <button id="nav-tab-pricelist" onclick="switchMainTab('pricelist')" class="px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap">
+                    <i class="fa-solid fa-table-list"></i>
+                    <span>Daftar Harga Standar</span>
+                </button>
+                <button id="nav-tab-orders" onclick="switchMainTab('orders')" class="relative px-3.5 py-1.5 rounded-lg text-xs font-bold flex items-center space-x-1.5 transition-all text-slate-400 hover:text-white hover:bg-slate-800 whitespace-nowrap">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <span>Pesanan Realtime</span>
+                    <span id="nav-unread-orders-badge" class="bg-rose-500 text-white text-[9px] font-black px-1.5 py-0.2 rounded-full hidden">0</span>
                 </button>
             </div>
         </div>
