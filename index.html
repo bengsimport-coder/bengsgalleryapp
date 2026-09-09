@@ -218,7 +218,7 @@
             </div>
         </div>
 
-        <!-- BARIS UNDO, REDO, EXPORT & IMPORT DATA -->
+        <!-- BARIS UNDO, REDO, EXPORT & IMPORT DATA (DI ATAS TAB NAVIGASI) -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 border-t border-slate-800/80 pt-2 pb-1">
             <div class="text-[11px] font-bold text-slate-400 flex items-center space-x-1.5">
                 <i class="fa-solid fa-sliders text-brand-400"></i>
@@ -2566,7 +2566,7 @@
             const total = cart.reduce((a, b) => a + b.totalPrice, 0);
 
             let stockUpdated = false;
-            let allItemsReadyToko = true; // Flag to check if all ordered items are fully ready at the store
+            let allItemsReadyToko = true;
 
             const processedItems = cart.map(item => {
                 const reqQty = item.quantity || 1;
@@ -2584,7 +2584,16 @@
                 }
 
                 if (!matchedStock && itemCode && window.appState.stockItems) {
-                    matchedStock = window.appState.stockItems.find(stk => (stk.code || '').trim().toLowerCase() === itemCode && (stk.location || 'toko') === 'toko' && (stk.qty || 0) >= reqQty);
+                    matchedStock = window.appState.stockItems.find(stk => 
+                        (stk.code || '').trim().toLowerCase() === itemCode && 
+                        stk.width === itemWidth && 
+                        stk.height === itemHeight && 
+                        stk.typeKey === itemType &&
+                        !!stk.useLinen === itemLinen &&
+                        (stk.depth3D || 'none') === item3D &&
+                        (stk.location || 'toko') === 'toko' && 
+                        (stk.qty || 0) >= reqQty
+                    );
                 }
 
                 if (!matchedStock && itemWidth && itemHeight && itemType && window.appState.stockItems) {
@@ -2618,7 +2627,6 @@
                         allItemsReadyToko = false;
                     }
                 } else {
-                    // Check if ready in gudang
                     let gudangStock = null;
                     if (itemWidth && itemHeight && itemType && window.appState.stockItems) {
                         gudangStock = window.appState.stockItems.find(stk => 
@@ -2653,7 +2661,6 @@
                 renderPricelistTable();
             }
 
-            // Determine initial order status: if all items were ready at the store, auto-set to "Selesai"
             const initialOrderStatus = allItemsReadyToko ? 'Selesai' : 'Baru';
             const initialWorkerName = allItemsReadyToko ? `Otomatis Ready di Toko (${window.appState.activeCashierName})` : '';
 
@@ -2764,7 +2771,7 @@
             );
 
             if (matches.length === 0) {
-                return `<span class="px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase bg-slate-100 text-slate-600 border border-slate-300 inline-flex items-center space-x-1"><i class="fa-solid fa-hammer mr-1"></i><span>Pesan Gudang</span></span>`;
+                return `<div class="inline-flex flex-col items-start"><span class="px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase bg-slate-100 text-slate-600 border border-slate-300 inline-flex items-center space-x-1"><i class="fa-solid fa-hammer mr-1"></i><span>Pesan Gudang</span></span></div>`;
             }
 
             const tokoQty = matches.filter(i => (i.location || 'toko') === 'toko').reduce((acc, i) => acc + (i.qty || 0), 0);
@@ -2782,7 +2789,7 @@
 
             const detailBtn = `<button type="button" onclick="openStockCodeDetailModal(${w}, ${h}, '${typeKey}', ${useLinen}, '${depth3D}')" class="mt-1.5 inline-flex items-center space-x-1 text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200"><i class="fa-solid fa-list-check"></i><span>Detail Kode</span></button>`;
 
-            return `<div>${badgeHtml}<div>${detailBtn}</div></div>`;
+            return `<div class="inline-flex flex-col items-start">${badgeHtml}<div>${detailBtn}</div></div>`;
         };
 
         window.openStockCodeDetailModal = function(w, h, typeKey, useLinen = false, depth3D = 'none') {
@@ -3230,7 +3237,10 @@
 
             body.innerHTML = items.map(stk => {
                 const isAvailable = (stk.qty || 0) > 0;
-                const specStr = stk.width && stk.height ? `${stk.width} x ${stk.height} cm` : (stk.desc || '-');
+                let specStr = stk.width && stk.height ? `${stk.width} x ${stk.height} cm` : (stk.desc || '-');
+                if (stk.useLinen) specStr += ' + Linen';
+                if (stk.depth3D && stk.depth3D !== 'none') specStr += ` | 3D (${stk.depth3D})`;
+
                 const hppDisplay = isOwner ? formatRp(stk.hpp || 0) : '<span class="text-slate-400">🔒 Owner</span>';
                 
                 const locBadge = (stk.location || 'toko') === 'gudang' 
@@ -3293,6 +3303,12 @@
             document.getElementById('stock-input-code').value = '';
             document.getElementById('stock-input-desc').value = '';
             
+            const checkLinen = document.getElementById('stock-check-linen');
+            if (checkLinen) checkLinen.checked = false;
+
+            const select3d = document.getElementById('stock-select-3d');
+            if (select3d) select3d.value = 'none';
+
             const typeSelect = document.getElementById('stock-frame-type');
             if (typeSelect && window.appState.rates?.sticks) {
                 typeSelect.innerHTML = Object.keys(window.appState.rates.sticks).map(k => {
@@ -3429,8 +3445,12 @@
                             ${workerNote}
                         </td>
                         <td class="p-3 text-center">
-                            <div class="flex items-center justify-center space-x-1.5">
-                                <button type="button" onclick="printReceipt('${ord.id}')" title="Cetak Struk" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm">
+                            <div class="flex items-center justify-center space-x-1.5 flex-wrap gap-1">
+                                <button type="button" onclick="openOrderDetailsModal('${ord.id}')" title="Detail Pesanan Lengkap" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center space-x-1">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    <span>Detail</span>
+                                </button>
+                                <button type="button" onclick="printReceipt('${ord.id}')" title="Cetak Struk" class="px-2 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm">
                                     <i class="fa-solid fa-print"></i>
                                 </button>
                                 ${isOwner ? `
@@ -3443,6 +3463,98 @@
                     </tr>
                 `;
             }).join('');
+        };
+
+        window.openOrderDetailsModal = function(orderId) {
+            const ord = (window.appState.ordersLog || []).find(o => o.id === orderId);
+            if (!ord) return;
+
+            let modalEl = document.getElementById('order-details-modal');
+            if (!modalEl) {
+                const modalDiv = document.createElement('div');
+                modalDiv.id = 'order-details-modal';
+                modalDiv.className = 'fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[130] hidden flex items-center justify-center p-3 sm:p-4';
+                modalDiv.innerHTML = `
+                    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[85vh] flex flex-col">
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+                            <div>
+                                <h3 id="ord-modal-title" class="font-extrabold text-slate-900 text-sm flex items-center space-x-2">
+                                    <i class="fa-solid fa-file-invoice text-indigo-600"></i>
+                                    <span>Rincian Detail Pesanan</span>
+                                </h3>
+                                <p id="ord-modal-subtitle" class="text-[11px] text-slate-500 mt-0.5">Informasi lengkap pesanan & spesifikasi pengerjaan</p>
+                            </div>
+                            <button type="button" onclick="closeOrderDetailsModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                                <i class="fa-solid fa-xmark text-lg"></i>
+                            </button>
+                        </div>
+                        <div class="flex-1 overflow-y-auto space-y-3 pr-1 text-xs" id="ord-modal-body"></div>
+                        <div class="pt-2 border-t border-slate-100 text-right">
+                            <button type="button" onclick="closeOrderDetailsModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700">
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modalDiv);
+                modalEl = modalDiv;
+            }
+
+            const titleEl = document.getElementById('ord-modal-title');
+            const bodyEl = document.getElementById('ord-modal-body');
+            if (titleEl) titleEl.innerText = `Rincian Detail Pesanan: ${ord.id}`;
+
+            if (bodyEl) {
+                let itemsHtml = (ord.items || []).map((it, idx) => {
+                    const stick = window.appState.rates?.sticks?.[it.typeKey] || { name: it.typeKey || 'Bingkai' };
+                    
+                    const depth3DLine = it.depth3D && it.depth3D !== 'none' ? `<div><b>Kedalaman 3D:</b> 3D (${it.depth3D})</div>` : '';
+
+                    return `
+                        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 space-y-1.5">
+                            <div class="flex justify-between items-center font-extrabold text-slate-900">
+                                <span>#${idx + 1}. ${it.name}</span>
+                                <span class="font-mono text-emerald-600">${formatRp(it.totalPrice)}</span>
+                            </div>
+                            <div class="grid grid-cols-2 gap-1 text-[11px] text-slate-600">
+                                <div><b>Ukuran:</b> ${it.sizeLabel || '-'}</div>
+                                <div><b>Jumlah Qty:</b> ${it.quantity || 1} Pcs</div>
+                                <div><b>Tipe Batang:</b> ${stick.name || '-'}</div>
+                                <div><b>Plus Linen:</b> ${it.useLinen ? 'Ya (+Linen)' : 'Tidak'}</div>
+                                ${depth3DLine}
+                                <div><b>Kode Bingkai:</b> ${it.frameCode ? `<span class="px-1.5 py-0.5 bg-amber-100 text-amber-900 rounded font-mono font-bold">${it.frameCode}</span>` : 'Tanpa Kode'}</div>
+                            </div>
+                            ${it.notes ? `<p class="text-[11px] text-slate-700 bg-amber-50 p-2 rounded-lg border border-amber-200 mt-1"><b>Catatan:</b> ${it.notes}</p>` : ''}
+                            <div class="pt-1">
+                                <span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase ${it.stockStatusNote && it.stockStatusNote.includes('Ready') ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">
+                                    ${it.stockStatusNote || 'Proses Gudang'}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+                bodyEl.innerHTML = `
+                    <div class="bg-indigo-50/70 p-3 rounded-2xl border border-indigo-200 space-y-1">
+                        <p class="font-extrabold text-indigo-950"><b>Pelanggan:</b> ${ord.customerName || '-'}</p>
+                        <p class="text-indigo-900"><b>No. WhatsApp:</b> ${ord.customerPhone || '-'}</p>
+                        <p class="text-indigo-900"><b>Kasir / Pembuat:</b> ${ord.cashierName || '-'}</p>
+                        <p class="text-indigo-900"><b>Waktu Pesan:</b> ${ord.dateStr || '-'}</p>
+                        <p class="text-indigo-900"><b>Status Pembayaran:</b> ${ord.paymentStatus.toUpperCase()} (${ord.paymentMethod || 'cash'})</p>
+                    </div>
+                    <div class="space-y-2">
+                        <p class="font-extrabold text-slate-800 uppercase tracking-wider text-[10px]">Daftar Item & Spesifikasi Rinci:</p>
+                        ${itemsHtml}
+                    </div>
+                `;
+            }
+
+            modalEl.classList.remove('hidden');
+        };
+
+        window.closeOrderDetailsModal = function() {
+            const modalEl = document.getElementById('order-details-modal');
+            if (modalEl) modalEl.classList.add('hidden');
         };
 
         window.updateOrderStatus = async function(orderId, newStatus) {
