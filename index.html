@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bengs Gallery & 3 Flower - Sistem POS & Kalkulator Bingkai Realtime</title>
+    <title>Bengs Gallery & 3 Flower - POS & Kalkulator Bingkai Realtime</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -113,11 +113,6 @@
                 <button type="submit" class="w-full py-3 bg-brand-600 hover:bg-brand-700 text-white rounded-xl text-xs font-bold shadow-lg shadow-brand-600/30 transition-all transform active:scale-95">
                     <i class="fa-solid fa-right-to-bracket mr-1.5"></i>Masuk Mode Kasir
                 </button>
-                <div class="text-center">
-                    <button type="button" onclick="openMasterResetModal()" class="text-[11px] text-slate-500 hover:text-brand-600 font-semibold underline">
-                        Lupa Password Karyawan/Sales/Produksi?
-                    </button>
-                </div>
             </form>
 
             <form id="form-gate-sales" onsubmit="handleGatekeeperSalesLogin(event)" class="space-y-4 hidden">
@@ -223,7 +218,7 @@
             </div>
         </div>
 
-        <!-- BARIS UNDO, REDO, EXPORT & IMPORT DATA (DIATAS KALKULATOR CUSTOM) -->
+        <!-- BARIS UNDO, REDO, EXPORT & IMPORT DATA -->
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-2 border-t border-slate-800/80 pt-2 pb-1">
             <div class="text-[11px] font-bold text-slate-400 flex items-center space-x-1.5">
                 <i class="fa-solid fa-sliders text-brand-400"></i>
@@ -779,7 +774,7 @@
                             </div>
                             <div class="sm:col-span-4">
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Kode Bingkai Manual:</label>
-                                <input type="text" id="input-item-frame-code" placeholder="Contoh: Kode K / A" oninput="updateFormState('itemFrameCode', this.value)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-amber-800 uppercase">
+                                <input type="text" id="input-item-frame-code" placeholder="Contoh: Kode 1A / K" oninput="updateFormState('itemFrameCode', this.value)" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg text-xs font-bold text-amber-800 uppercase">
                             </div>
                             <div class="sm:col-span-5">
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Catatan Khusus Order:</label>
@@ -901,6 +896,7 @@
             </div>
         </section>
 
+        <!-- SECTION DAFTAR HARGA STANDAR -->
         <section id="main-section-pricelist" class="space-y-4 hidden">
             <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 
@@ -921,18 +917,22 @@
                             <button type="button" id="btn-filter-cust-reseller" onclick="setPricelistCustomerFilter('reseller')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Reseller</button>
                         </div>
 
-                        <!-- FILTER PLUS LINEN -->
+                        <!-- FILTER PLUS LINEN & TANPA KACA -->
                         <div class="flex items-center space-x-1 bg-amber-50 p-1 rounded-xl border border-amber-200 text-xs font-bold">
                             <button type="button" id="btn-filter-linen" onclick="togglePricelistLinenFilter()" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1">
                                 <i class="fa-solid fa-border-all text-amber-600"></i>
                                 <span>Plus Linen</span>
+                            </button>
+                            <div class="w-px h-3.5 bg-amber-200"></div>
+                            <button type="button" id="btn-filter-tanpa-kaca" onclick="togglePricelistTanpaKacaFilter()" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1">
+                                <i class="fa-solid fa-ban text-rose-500"></i>
+                                <span>Tanpa Kaca</span>
                             </button>
                         </div>
 
                         <!-- FILTER KEDALAMAN 3D BOX -->
                         <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
                             <span class="text-[10px] text-slate-400 px-1 uppercase"><i class="fa-solid fa-box mr-1"></i>3D Box:</span>
-                            <button type="button" id="btn-filter-3d-none" onclick="setPricelist3DFilter('none')" class="px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all">Tanpa 3D</button>
                             <button type="button" id="btn-filter-3d-3cm" onclick="setPricelist3DFilter('3cm')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">3D 3cm</button>
                             <button type="button" id="btn-filter-3d-5cm" onclick="setPricelist3DFilter('5cm')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">3D 5cm</button>
                         </div>
@@ -944,7 +944,7 @@
                         <label class="block text-[11px] font-bold text-slate-600 mb-1">Cari Ukuran / Nama:</label>
                         <div class="relative">
                             <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400 text-xs"></i>
-                            <input type="text" id="pricelist-search-input" placeholder="Ketik ukuran misal 30x40..." oninput="renderPricelistTable()" class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none">
+                            <input type="text" id="pricelist-search-input" placeholder="Ketik ukuran misal 20x25..." oninput="renderPricelistTable()" class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none">
                         </div>
                     </div>
 
@@ -976,6 +976,7 @@
             </div>
         </section>
 
+        <!-- SECTION DASHBOARD PESANAN REALTIME -->
         <section id="main-section-orders" class="space-y-4 hidden">
             <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 
@@ -1149,7 +1150,7 @@
                     </div>
 
                     <div class="sm:col-span-3">
-                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Lokasi Kebarang / Status:</label>
+                        <label class="block text-[11px] font-bold text-slate-600 mb-1">Lokasi Keberadaan / Status:</label>
                         <select id="stock-location-filter" onchange="renderStockTable()" class="w-full px-3 py-1.5 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800">
                             <option value="all">Semua Lokasi</option>
                             <option value="toko">🏪 Ready di Toko</option>
@@ -1190,7 +1191,7 @@
 
     </main>
 
-    <!-- MODAL TAMBAH / EDIT STOK PRODUK -->
+    <!-- ADD/EDIT STOCK MODAL -->
     <div id="add-stock-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-3 sm:p-4">
         <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[90vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
@@ -1224,7 +1225,6 @@
                     <input type="text" id="stock-input-name" placeholder="Contoh: Bingkai Minimalis 10R Emas / Box Mahar Rustic" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800">
                 </div>
 
-                <!-- KONTROL SPESIFIKASI BINGKAI OTOMATIS (KHUSUS BINGKAI FOTO & FRAME MAHAR 3D) -->
                 <div id="stock-frame-spec-container" class="bg-amber-50/70 p-3 rounded-2xl border border-amber-200 space-y-3">
                     <p class="text-[10px] font-extrabold uppercase text-amber-900 flex items-center space-x-1">
                         <i class="fa-solid fa-calculator text-amber-700"></i>
@@ -1299,8 +1299,8 @@
                         <input type="number" id="stock-input-qty" min="0" value="1" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-center">
                     </div>
                     <div>
-                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Kode / Rak (Opsional):</label>
-                        <input type="text" id="stock-input-code" placeholder="RAK-A1" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold uppercase text-amber-900">
+                        <label class="block text-[11px] font-bold text-slate-700 mb-1">Kode Bingkai:</label>
+                        <input type="text" id="stock-input-code" placeholder="Kode A / K" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold uppercase text-amber-900">
                     </div>
                 </div>
 
@@ -1321,36 +1321,30 @@
         </div>
     </div>
 
-    <!-- EDIT SIZE LABEL MODAL -->
-    <div id="edit-size-label-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-slate-200 space-y-4">
+    <!-- MODAL DETAIL KODE BINGKAI STOK -->
+    <div id="stock-code-detail-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-[120] hidden flex items-center justify-center p-3 sm:p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl border border-slate-200 space-y-4 max-h-[85vh] flex flex-col">
             <div class="flex justify-between items-center border-b border-slate-100 pb-3">
-                <h3 class="font-extrabold text-slate-900 text-sm flex items-center space-x-2">
-                    <i class="fa-solid fa-pen-to-square text-amber-600"></i>
-                    <span>Edit Penyebutan Ukuran (Admin)</span>
-                </h3>
-                <button type="button" onclick="closeEditSizeLabelModal()" class="text-slate-400 hover:text-slate-700 p-1">
+                <div>
+                    <h3 class="font-extrabold text-slate-900 text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-list-check text-indigo-600"></i>
+                        <span id="stock-code-modal-title">Rincian Kode Bingkai Ready</span>
+                    </h3>
+                    <p id="stock-code-modal-subtitle" class="text-[11px] text-slate-500 mt-0.5">Daftar variasi kode bingkai & lokasi ketersediaan stok</p>
+                </div>
+                <button type="button" onclick="closeStockCodeDetailModal()" class="text-slate-400 hover:text-slate-700 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
-            <form onsubmit="handleSaveSizeLabel(event)" class="space-y-3.5">
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-700 mb-1">Dimensi Ukuran:</label>
-                    <input type="text" id="edit-size-dim-display" readonly class="w-full px-3 py-2 bg-slate-100 border border-slate-300 rounded-xl text-xs font-bold text-slate-600">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold text-slate-700 mb-1">Nama / Label Ukuran Baru:</label>
-                    <input type="text" id="edit-size-label-input" placeholder="Contoh: 8R (20x25 cm) atau 20x30 cm" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                </div>
-                <div class="flex space-x-2 pt-1">
-                    <button type="button" onclick="closeEditSizeLabelModal()" class="flex-1 py-2.5 border border-slate-300 rounded-xl text-xs font-bold text-slate-600 hover:bg-slate-100">
-                        Batal
-                    </button>
-                    <button type="submit" class="flex-1 py-2.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold shadow-md">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </form>
+
+            <div class="flex-1 overflow-y-auto space-y-2.5 pr-1 text-xs" id="stock-code-modal-list">
+            </div>
+
+            <div class="pt-2 border-t border-slate-100 text-right">
+                <button type="button" onclick="closeStockCodeDetailModal()" class="px-4 py-2 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700">
+                    Tutup
+                </button>
+            </div>
         </div>
     </div>
 
@@ -1449,7 +1443,6 @@
 
             <div class="flex-1 overflow-y-auto space-y-4 pr-1">
                 <div id="checkout-cart-items-list" class="space-y-2 text-xs">
-                    <!-- Dynamic cart items list -->
                 </div>
 
                 <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3 text-xs">
@@ -1517,7 +1510,6 @@
         const DEFAULT_STORE_CODE = 'BENGS-GALLERY';
         const appId = 'bengs-gallery-store-v2';
 
-        /* Helper Functions */
         window.formatRp = function(val) {
             if (isNaN(val) || val === null || val === undefined) return "Rp 0";
             return "Rp " + Math.round(val).toLocaleString('id-ID');
@@ -1555,7 +1547,6 @@
             }, 3000);
         };
 
-        /* Default Config from User's Project (bengsgallery1) */
         const DEFAULT_FIREBASE_CONFIG = {
             apiKey: "AIzaSyAaXDAesMb8nCS3zRUqquHhHJIZKUDlgNA",
             authDomain: "bengsgallery1.firebaseapp.com",
@@ -1616,18 +1607,20 @@
             cart: [],
             ordersLog: [],
             stockItems: [
-                { id: 'stk-1', category: 'Bingkai Foto', name: 'Bingkai Ukir Emas 10R (26x31 cm)', width: 26, height: 31, typeKey: 'tipe_3', hpp: 32000, sellingPrice: 65000, qty: 5, code: 'KODE A', desc: 'Selesai pasang kaca & triplek' },
-                { id: 'stk-2', category: 'Box Hantaran', name: 'Box Hantaran Kayu Akrilik (30x40 cm)', width: 30, height: 40, typeKey: 'tipe_5', hpp: 75000, sellingPrice: 150000, qty: 3, code: 'KODE B', desc: 'Sudah termasuk sudut hias' },
-                { id: 'stk-3', category: 'Frame Mahar 3D', name: 'Frame Mahar 3D Kedalaman 5cm (30x40 cm)', width: 30, height: 40, typeKey: 'tipe_5', hpp: 95000, sellingPrice: 220000, qty: 2, code: 'KODE M1', desc: 'Spesialis Mahar Rustic' }
+                { id: 'stk-1', category: 'Bingkai Foto', location: 'toko', name: 'Bingkai Ukir Emas 10R (26x31 cm)', width: 26, height: 31, typeKey: 'tipe_3', hpp: 32000, sellingPrice: 65000, qty: 5, code: '1A', desc: 'Selesai pasang kaca & triplek', useLinen: false, depth3D: 'none' },
+                { id: 'stk-2', category: 'Box Hantaran', location: 'gudang', name: 'Box Hantaran Kayu Akrilik (30x40 cm)', width: 30, height: 40, typeKey: 'tipe_5', hpp: 75000, sellingPrice: 150000, qty: 3, code: 'H1', desc: 'Sudah termasuk sudut hias', useLinen: false, depth3D: 'none' },
+                { id: 'stk-3', category: 'Frame Mahar 3D', location: 'toko', name: 'Frame Mahar 3D Kedalaman 5cm (30x40 cm)', width: 30, height: 40, typeKey: 'tipe_5', hpp: 95000, sellingPrice: 220000, qty: 2, code: 'M1', desc: 'Spesialis Mahar Rustic', useLinen: false, depth3D: '5cm' }
             ],
             
             pricelistFilterCustomer: 'all',
             pricelistFilterLinen: false,
+            pricelistFilterTanpaKaca: false,
             pricelistFilter3D: 'none',
             
             employees: [
                 { id: 'prabu', name: 'Prabu', password: '123', role: 'karyawan' },
-                { id: 'sisti', name: 'Sisti', password: '123', role: 'karyawan' }
+                { id: 'sisti', name: 'Sisti', password: '123', role: 'karyawan' },
+                { id: 'herman', name: 'Herman', password: '123', role: 'karyawan' }
             ],
 
             sales: [
@@ -1773,28 +1766,29 @@
             updateUndoRedoButtons();
         }
 
-        /* Synchronization of state to DOM inputs */
         window.syncInputsFromState = function() {
             const state = window.appState;
             if (!state) return;
 
-            // Populate pricelist dropdown filter dynamically with updated stick widths
             const pricelistSelect = document.getElementById('pricelist-select-type');
             if (pricelistSelect && state.rates && state.rates.sticks) {
                 const currentVal = pricelistSelect.value || 'all';
                 let optionsHtml = '<option value="all">Semua Tipe Bingkai (Tipe 1 - 12)</option>';
-                Object.keys(state.rates.sticks).forEach(k => {
+                const sortedKeys = Object.keys(state.rates.sticks).sort((a, b) => {
+                    const numA = parseInt(a.replace('tipe_', ''), 10) || 0;
+                    const numB = parseInt(b.replace('tipe_', ''), 10) || 0;
+                    return numA - numB;
+                });
+                sortedKeys.forEach(k => {
                     const st = state.rates.sticks[k];
                     optionsHtml += `<option value="${k}" ${k === currentVal ? 'selected' : ''}>${st.name} (${st.widthCm} cm)</option>`;
                 });
                 pricelistSelect.innerHTML = optionsHtml;
             }
 
-            // Header Active Cashier
             const hCashier = document.getElementById('header-active-cashier');
             if (hCashier) hCashier.innerText = `Kasir: ${state.activeCashierName || '-'}`;
 
-            // Material Frame Select Dropdown
             const selectFrame = document.getElementById('select-frame-material');
             if (selectFrame && state.rates && state.rates.sticks) {
                 const currentVal = state.form.frameMaterial;
@@ -1805,13 +1799,11 @@
                 }).join('');
             }
 
-            // Custom Dimensions
             const wInput = document.getElementById('input-custom-width');
             const hInput = document.getElementById('input-custom-height');
             if (wInput) wInput.value = state.form.customWidth;
             if (hInput) hInput.value = state.form.customHeight;
 
-            // Form States
             const triplekSel = document.getElementById('select-triplek-type');
             if (triplekSel) triplekSel.value = state.form.triplekType;
 
@@ -1833,7 +1825,6 @@
             const notesInput = document.getElementById('input-item-notes');
             if (notesInput) notesInput.value = state.form.notes;
 
-            // Owner Material Master Card Visibility
             const ownerCard = document.getElementById('owner-material-master-card');
             const ownerHppBreakdown = document.getElementById('owner-hpp-breakdown');
             const ownerPerfCard = document.getElementById('owner-performance-card');
@@ -1848,7 +1839,6 @@
                 if (ownerPerfCard) ownerPerfCard.classList.add('hidden');
             }
 
-            // Sync Owner Rates Inputs
             if (state.rates) {
                 const ohInput = document.getElementById('input-overhead-percent');
                 if (ohInput) ohInput.value = state.rates.overheadPercent;
@@ -1894,16 +1884,13 @@
             }
         };
 
-        /* Calculation Core */
         window.calculateSingleFramePrice = function(typeKey, w, h, formState) {
             const rates = window.appState.rates;
             const stick = rates.sticks[typeKey] || rates.sticks['tipe_1'];
             
-            // Perimeter in cm with miter cuts
             const perim = 2 * (w + h) + (8 * stick.widthCm);
             const stickCost = (perim / stick.stickLength) * stick.stickPrice;
 
-            // Triplek cost
             let triplekCost = 0;
             if (formState.triplekType === 'triplek_3mm') {
                 const sheet = rates.sheets.triplek_3mm;
@@ -1913,26 +1900,21 @@
                 triplekCost = (w * h) / (sheet.width * sheet.height) * sheet.sheetPrice;
             }
 
-            // Kaca cost
             let kacaCost = 0;
-            if (formState.useKaca) {
+            if (formState.useKaca !== false) {
                 const sheet = rates.sheets.kaca_2mm;
                 kacaCost = (w * h) / (sheet.width * sheet.height) * sheet.sheetPrice;
             }
 
-            // Aksesoris / Overhead
             const aksesorisCost = (stickCost + triplekCost + kacaCost) * (rates.overheadPercent / 100);
             const modalTotal = stickCost + triplekCost + kacaCost + aksesorisCost;
 
-            // Base selling prices
             let baseKonsumen = (stickCost * stick.multKonsumen) + triplekCost + kacaCost + aksesorisCost;
             let baseReseller = (stickCost * stick.multReseller) + triplekCost + kacaCost + aksesorisCost;
 
-            // Linen / Double Matting (+20%)
             const linenExtraK = baseKonsumen * 0.20;
             const linenExtraR = baseReseller * 0.20;
 
-            // 3D Box depth add-ons
             let extra3D_3cm = modalTotal * 0.35;
             let extra3D_5cm = 30000;
 
@@ -1965,7 +1947,6 @@
             const form = window.appState.form;
             const res = calculateSingleFramePrice(form.frameMaterial, form.customWidth, form.customHeight, form);
 
-            // Unit rate indicators in Owner Table
             const rates = window.appState.rates;
             updateElemText('calc-unit-triplek_3mm', `Rp ${(rates.sheets.triplek_3mm.sheetPrice / (122*244)).toFixed(2)} / cm²`);
             updateElemText('calc-unit-triplek_5mm', `Rp ${(rates.sheets.triplek_5mm.sheetPrice / (122*244)).toFixed(2)} / cm²`);
@@ -1976,7 +1957,6 @@
                 updateElemText(`calc-unit-${k}`, `Rp ${(st.stickPrice / st.stickLength).toFixed(0)} / cm`);
             });
 
-            // Owner HPP breakdown text
             updateElemText('val-price-frame', formatRp(res.stickCost));
             updateElemText('val-price-triplek', formatRp(res.triplekCost));
             updateElemText('val-price-kaca', formatRp(res.kacaCost));
@@ -1992,7 +1972,6 @@
             const finalModalTotal = res.modalTotal * form.quantity;
             updateElemText('val-modal-total', formatRp(finalModalTotal));
 
-            // Price Option Cards
             updateElemText('val-total-k-no', formatRp(res.kNo * form.quantity));
             updateElemText('val-total-k-yes', formatRp(res.kYes * form.quantity));
             updateElemText('val-total-k-3d-no', formatRp(res.k3DNo * form.quantity));
@@ -2003,7 +1982,6 @@
             updateElemText('val-total-r-3d-no', formatRp(res.r3DNo * form.quantity));
             updateElemText('val-total-r-3d-yes', formatRp(res.r3DYes * form.quantity));
 
-            // Active price selection
             let currentPricePerUnit = res.kNo;
             if (form.customerType === 'reseller') {
                 if (form.depth3D === '3cm') currentPricePerUnit = form.useLinen ? res.r3DYes : res.r3DNo;
@@ -2070,7 +2048,6 @@
             }
         };
 
-        /* Cloud Firestore Sync */
         let unsubscribeRates = null;
         let unsubscribeOrders = null;
 
@@ -2105,7 +2082,7 @@
                     isFirebaseConnected = false;
                     if (err.code === 'permission-denied' || (err.message && err.message.includes('permissions'))) {
                         updateCloudBadgeUI('permission-denied', 'Izin Firestore Ditolak! (Klik Disini)');
-                        showToast('Izin Firestore Ditolak! Ubah Rules di Firebase Console -> allow read, write: if true;', 'error');
+                        showToast('Izin Firestore Ditolak! Ubah Rules di Firebase Console.', 'error');
                     } else {
                         updateCloudBadgeUI('error', 'Firestore Offline (Menggunakan Data Lokal)');
                     }
@@ -2162,12 +2139,6 @@
                 await setDoc(ratesDocRef, payload, { merge: true });
             } catch(e) {
                 console.warn("Cloud Save master info (handled):", e.message);
-                if (e.code === 'permission-denied' || (e.message && e.message.includes('permissions'))) {
-                    updateCloudBadgeUI('permission-denied', 'Izin Firestore Ditolak! (Klik Disini)');
-                    showToast('Gagal simpan Cloud (Izin Ditolak). Data tersimpan di memori lokal.', 'error');
-                } else {
-                    showToast('Gagal simpan ke Cloud. Data tersimpan di memori lokal.', 'info');
-                }
             }
         }
 
@@ -2241,7 +2212,7 @@
             if (cloudData.stockItems && Array.isArray(cloudData.stockItems)) {
                 window.appState.stockItems = JSON.parse(JSON.stringify(cloudData.stockItems));
             }
-            populateEmployeeDropdowns();
+            window.populateEmployeeDropdowns();
             if (cloudData.standardSizes && Array.isArray(cloudData.standardSizes)) {
                 window.appState.standardSizes = JSON.parse(JSON.stringify(cloudData.standardSizes));
             }
@@ -2289,7 +2260,6 @@
             }
         };
 
-        /* Event Handlers */
         window.toggleGatekeeperTab = function(role) {
             const tabs = ['karyawan', 'sales', 'produksi', 'owner'];
             tabs.forEach(t => {
@@ -2520,6 +2490,9 @@
                 id: Date.now().toString(),
                 name: `${stick.name} (${form.customWidth}x${form.customHeight} cm)`,
                 sizeLabel: `${form.customWidth}x${form.customHeight} cm`,
+                width: form.customWidth,
+                height: form.customHeight,
+                typeKey: form.frameMaterial,
                 quantity: form.quantity,
                 unitPrice: unitPrice,
                 totalPrice: unitPrice * form.quantity,
@@ -2592,6 +2565,98 @@
 
             const total = cart.reduce((a, b) => a + b.totalPrice, 0);
 
+            let stockUpdated = false;
+            let allItemsReadyToko = true; // Flag to check if all ordered items are fully ready at the store
+
+            const processedItems = cart.map(item => {
+                const reqQty = item.quantity || 1;
+                const itemCode = (item.frameCode || '').trim().toLowerCase();
+                const itemWidth = item.width || 0;
+                const itemHeight = item.height || 0;
+                const itemType = item.typeKey || '';
+                const itemLinen = !!item.useLinen;
+                const item3D = item.depth3D || 'none';
+
+                let matchedStock = null;
+
+                if (item.stockId && window.appState.stockItems) {
+                    matchedStock = window.appState.stockItems.find(stk => stk.id === item.stockId && (stk.qty || 0) > 0);
+                }
+
+                if (!matchedStock && itemCode && window.appState.stockItems) {
+                    matchedStock = window.appState.stockItems.find(stk => (stk.code || '').trim().toLowerCase() === itemCode && (stk.location || 'toko') === 'toko' && (stk.qty || 0) >= reqQty);
+                }
+
+                if (!matchedStock && itemWidth && itemHeight && itemType && window.appState.stockItems) {
+                    matchedStock = window.appState.stockItems.find(stk => 
+                        stk.width === itemWidth && 
+                        stk.height === itemHeight && 
+                        stk.typeKey === itemType &&
+                        !!stk.useLinen === itemLinen &&
+                        (stk.depth3D || 'none') === item3D &&
+                        (stk.location || 'toko') === 'toko' &&
+                        (stk.qty || 0) >= reqQty
+                    );
+                }
+
+                let stockStatusNote = "🔨 Pesan Gudang";
+                let isReadyTokoItem = false;
+
+                if (matchedStock) {
+                    if (matchedStock.qty >= reqQty) {
+                        matchedStock.qty -= reqQty;
+                        stockStatusNote = `✅ Ready Toko (-${reqQty})`;
+                        stockUpdated = true;
+                        isReadyTokoItem = true;
+                    } else if (matchedStock.qty > 0) {
+                        const avail = matchedStock.qty;
+                        matchedStock.qty = 0;
+                        stockStatusNote = `⚠️ Ready Toko ${avail} Pcs, Kurang ${reqQty - avail} Pcs`;
+                        stockUpdated = true;
+                        allItemsReadyToko = false;
+                    } else {
+                        allItemsReadyToko = false;
+                    }
+                } else {
+                    // Check if ready in gudang
+                    let gudangStock = null;
+                    if (itemWidth && itemHeight && itemType && window.appState.stockItems) {
+                        gudangStock = window.appState.stockItems.find(stk => 
+                            stk.width === itemWidth && 
+                            stk.height === itemHeight && 
+                            stk.typeKey === itemType &&
+                            !!stk.useLinen === itemLinen &&
+                            (stk.depth3D || 'none') === item3D &&
+                            stk.location === 'gudang' &&
+                            (stk.qty || 0) >= reqQty
+                        );
+                    }
+                    if (gudangStock) {
+                        gudangStock.qty -= reqQty;
+                        stockStatusNote = `📦 Ready Gudang (-${reqQty})`;
+                        stockUpdated = true;
+                        allItemsReadyToko = false;
+                    } else {
+                        allItemsReadyToko = false;
+                    }
+                }
+
+                return {
+                    ...item,
+                    stockStatusNote: stockStatusNote
+                };
+            });
+
+            if (stockUpdated) {
+                await saveMasterRatesToFirestore();
+                renderStockTable();
+                renderPricelistTable();
+            }
+
+            // Determine initial order status: if all items were ready at the store, auto-set to "Selesai"
+            const initialOrderStatus = allItemsReadyToko ? 'Selesai' : 'Baru';
+            const initialWorkerName = allItemsReadyToko ? `Otomatis Ready di Toko (${window.appState.activeCashierName})` : '';
+
             const newOrder = {
                 id: 'ORD-' + Date.now().toString().slice(-6),
                 timestamp: Date.now(),
@@ -2600,13 +2665,13 @@
                 customerPhone: phone,
                 cashierName: window.appState.activeCashierName,
                 cashierId: window.appState.activeCashierUsername,
-                items: cart,
+                items: processedItems,
                 totalBill: total,
                 paymentStatus: status,
                 paymentMethod: method,
                 dpAmount: status === 'dp' ? dpAmount : 0,
-                orderStatus: 'Baru',
-                workerName: window.appState.activeCashierName
+                orderStatus: initialOrderStatus,
+                workerName: initialWorkerName
             };
 
             if (db && isFirebaseConnected) {
@@ -2615,30 +2680,222 @@
                     await addDoc(colRef, newOrder);
                 } catch(e) { console.warn("Save order error:", e); }
             } else {
+                if (!window.appState.ordersLog) window.appState.ordersLog = [];
                 window.appState.ordersLog.unshift(newOrder);
                 renderOrdersLogTable();
             }
 
             window.appState.cart = [];
             updateCartBadge();
-            document.getElementById('checkout-modal').classList.add('hidden');
-            showToast('Pesanan berhasil dibuat & tersimpan!', 'success');
+            const checkoutModal = document.getElementById('checkout-modal');
+            if (checkoutModal) checkoutModal.classList.add('hidden');
+            
+            if (allItemsReadyToko) {
+                showToast('Pesanan berhasil! Stok toko terpotong & status otomatis SELESAI.', 'success');
+            } else {
+                showToast('Pesanan berhasil dibuat & dicatatkan ke sistem!', 'success');
+            }
         };
 
-        /* Pricelist Table Renderer */
-        window.setPricelistCustomerFilter = function(filter) {
-            window.appState.pricelistFilterCustomer = filter;
+        window.addPricelistItemToCart = function(sizeLabel, width, height, typeKey) {
+            const isLinen = !!window.appState.pricelistFilterLinen;
+            const isTanpaKaca = !!window.appState.pricelistFilterTanpaKaca;
+            const useKaca = !isTanpaKaca;
+            const depth3D = window.appState.pricelistFilter3D || 'none';
+            const custType = window.appState.pricelistFilterCustomer === 'reseller' ? 'reseller' : 'konsumen';
+
+            const unitPrice = getPricelistFramePrice(typeKey, width, height, custType, isLinen, depth3D, useKaca);
+            const stick = window.appState.rates.sticks[typeKey] || { name: typeKey };
+
+            const cartItem = {
+                id: 'cart-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                name: `${stick.name} (${sizeLabel})`,
+                sizeLabel: sizeLabel,
+                width: width,
+                height: height,
+                typeKey: typeKey,
+                quantity: 1,
+                unitPrice: unitPrice,
+                totalPrice: unitPrice,
+                useLinen: isLinen,
+                depth3D: depth3D,
+                frameCode: '',
+                notes: isTanpaKaca ? 'Tanpa Kaca' : ''
+            };
+
+            if (!window.appState.cart) window.appState.cart = [];
+            window.appState.cart.push(cartItem);
+
+            updateCartBadge();
+            showToast(`${stick.name} (${sizeLabel}) berhasil dimasukkan ke keranjang!`, 'success');
+        };
+
+        window.getPricelistFramePrice = function(typeKey, w, h, custType, useLinen, depth3D, useKaca = true) {
+            const formState = {
+                triplekType: 'triplek_3mm',
+                useKaca: useKaca,
+                useLinen: useLinen,
+                depth3D: depth3D
+            };
+            const res = calculateSingleFramePrice(typeKey, w, h, formState);
+
+            let price = res.kNo;
+            if (custType === 'reseller') {
+                if (depth3D === '3cm') price = useLinen ? res.r3DYes : res.r3DNo;
+                else if (depth3D === '5cm') price = (useLinen ? res.rYes : res.rNo) + res.extra3D_5cm;
+                else price = useLinen ? res.rYes : res.rNo;
+            } else {
+                if (depth3D === '3cm') price = useLinen ? res.k3DYes : res.k3DNo;
+                else if (depth3D === '5cm') price = (useLinen ? res.kYes : res.kNo) + res.extra3D_5cm;
+                else price = useLinen ? res.kYes : res.kNo;
+            }
+            return Math.round(price);
+        };
+
+        window.getStockStatusBadge = function(w, h, typeKey, useLinen = false, depth3D = 'none') {
+            const items = window.appState.stockItems || [];
+            const matches = items.filter(stk => 
+                stk.width === w && 
+                stk.height === h && 
+                stk.typeKey === typeKey &&
+                !!stk.useLinen === !!useLinen &&
+                (stk.depth3D || 'none') === (depth3D || 'none') &&
+                (stk.qty || 0) > 0
+            );
+
+            if (matches.length === 0) {
+                return `<span class="px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase bg-slate-100 text-slate-600 border border-slate-300 inline-flex items-center space-x-1"><i class="fa-solid fa-hammer mr-1"></i><span>Pesan Gudang</span></span>`;
+            }
+
+            const tokoQty = matches.filter(i => (i.location || 'toko') === 'toko').reduce((acc, i) => acc + (i.qty || 0), 0);
+            const gudangQty = matches.filter(i => i.location === 'gudang').reduce((acc, i) => acc + (i.qty || 0), 0);
+            const totalQty = tokoQty + gudangQty;
+
+            let badgeHtml = '';
+            if (tokoQty > 0 && gudangQty > 0) {
+                badgeHtml = `<span class="px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 inline-block">Ready Toko & Gudang (${totalQty} Pcs)</span>`;
+            } else if (tokoQty > 0) {
+                badgeHtml = `<span class="px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300 inline-block">Ready Toko (${tokoQty} Pcs)</span>`;
+            } else {
+                badgeHtml = `<span class="px-2.5 py-1 rounded-md text-[11px] font-extrabold uppercase bg-amber-100 text-amber-800 border border-amber-300 inline-block">Ready Gudang (${gudangQty} Pcs)</span>`;
+            }
+
+            const detailBtn = `<button type="button" onclick="openStockCodeDetailModal(${w}, ${h}, '${typeKey}', ${useLinen}, '${depth3D}')" class="mt-1.5 inline-flex items-center space-x-1 text-[10px] font-bold text-indigo-600 hover:text-indigo-800 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-200"><i class="fa-solid fa-list-check"></i><span>Detail Kode</span></button>`;
+
+            return `<div>${badgeHtml}<div>${detailBtn}</div></div>`;
+        };
+
+        window.openStockCodeDetailModal = function(w, h, typeKey, useLinen = false, depth3D = 'none') {
+            const items = (window.appState.stockItems || []).filter(stk => 
+                stk.width === w && 
+                stk.height === h && 
+                stk.typeKey === typeKey &&
+                !!stk.useLinen === !!useLinen &&
+                (stk.depth3D || 'none') === (depth3D || 'none') &&
+                (stk.qty || 0) > 0
+            );
+
+            const modal = document.getElementById('stock-code-detail-modal');
+            const listEl = document.getElementById('stock-code-modal-list');
+            const titleEl = document.getElementById('stock-code-modal-title');
+            const subtitleEl = document.getElementById('stock-code-modal-subtitle');
+
+            const stick = window.appState.rates.sticks[typeKey] || { name: typeKey };
+            if (titleEl) titleEl.innerText = `Rincian Kode: ${stick.name} (${w}x${h} cm)`;
             
-            ['all', 'konsumen', 'reseller'].forEach(f => {
-                const btn = document.getElementById(`btn-filter-cust-${f}`);
-                if (btn) {
-                    if (f === filter) {
-                        btn.className = "px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-sm transition-all font-bold";
-                    } else {
-                        btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-bold";
-                    }
+            const totalQty = items.reduce((acc, i) => acc + (i.qty || 0), 0);
+            if (subtitleEl) subtitleEl.innerText = `Daftar variasi kode bingkai ready yang sesuai spesifikasi (${totalQty} Pcs Total)`;
+
+            if (listEl) {
+                if (items.length === 0) {
+                    listEl.innerHTML = `<p class="text-center text-slate-400 py-4 font-bold">Tidak ada rincian kode ready untuk item ini.</p>`;
+                } else {
+                    listEl.innerHTML = items.map(stk => {
+                        const locLabel = (stk.location || 'toko') === 'gudang' 
+                            ? `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-amber-100 text-amber-800 border border-amber-300"><i class="fa-solid fa-warehouse mr-1"></i>Gudang</span>`
+                            : `<span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300"><i class="fa-solid fa-store mr-1"></i>Toko</span>`;
+
+                        return `
+                            <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center justify-between gap-2">
+                                <div>
+                                    <div class="flex items-center space-x-2 mb-1">
+                                        <span class="px-2 py-0.5 bg-amber-100 text-amber-900 border border-amber-300 font-mono font-black text-xs rounded-md">Kode: ${stk.code || 'Tanpa Kode'}</span>
+                                        ${locLabel}
+                                    </div>
+                                    <p class="font-bold text-slate-800 text-xs">${stk.name}</p>
+                                    ${stk.desc ? `<p class="text-[10px] text-slate-500">${stk.desc}</p>` : ''}
+                                </div>
+                                <div class="text-right">
+                                    <p class="font-mono font-black text-slate-800 text-xs mb-1">${stk.qty || 0} Pcs</p>
+                                    <button type="button" onclick="addStockToCart('${stk.id}')" class="px-3 py-1 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-lg text-xs shadow-sm flex items-center space-x-1">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                        <span>Beli Kode Ini</span>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
                 }
+            }
+
+            if (modal) modal.classList.remove('hidden');
+        };
+
+        window.closeStockCodeDetailModal = function() {
+            const modal = document.getElementById('stock-code-detail-modal');
+            if (modal) modal.classList.add('hidden');
+        };
+
+        window.addStockToCart = function(stockId) {
+            const items = window.appState.stockItems || [];
+            const stk = items.find(s => s.id === stockId);
+            if (!stk) {
+                showToast('Stok produk tidak ditemukan!', 'error');
+                return;
+            }
+            if ((stk.qty || 0) <= 0) {
+                showToast('Stok barang ini sedang habis!', 'error');
+                return;
+            }
+
+            const cartItem = {
+                id: 'cart-' + Date.now() + '-' + Math.floor(Math.random() * 1000),
+                stockId: stk.id,
+                name: stk.name,
+                sizeLabel: stk.width && stk.height ? `${stk.width}x${stk.height} cm` : (stk.desc || 'Stok Ready'),
+                width: stk.width,
+                height: stk.height,
+                typeKey: stk.typeKey,
+                quantity: 1,
+                unitPrice: stk.sellingPrice || 0,
+                totalPrice: stk.sellingPrice || 0,
+                useLinen: !!stk.useLinen,
+                depth3D: stk.depth3D || 'none',
+                frameCode: stk.code || '',
+                notes: stk.desc || ''
+            };
+
+            if (!window.appState.cart) window.appState.cart = [];
+            window.appState.cart.push(cartItem);
+
+            updateCartBadge();
+            closeStockCodeDetailModal();
+            showToast(`Produk ${stk.code ? 'Kode ' + stk.code : ''} (${stk.name}) dimasukkan ke keranjang!`, 'success');
+        };
+
+        window.setPricelistCustomerFilter = function(target) {
+            window.appState.pricelistFilterCustomer = target;
+            const btnAll = document.getElementById('btn-filter-cust-all');
+            const btnKonsumen = document.getElementById('btn-filter-cust-konsumen');
+            const btnReseller = document.getElementById('btn-filter-cust-reseller');
+
+            [btnAll, btnKonsumen, btnReseller].forEach(b => {
+                if (b) b.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all";
             });
+
+            if (target === 'konsumen' && btnKonsumen) btnKonsumen.className = "px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-sm transition-all";
+            else if (target === 'reseller' && btnReseller) btnReseller.className = "px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-sm transition-all";
+            else if (btnAll) btnAll.className = "px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-sm transition-all";
 
             renderPricelistTable();
         };
@@ -2648,230 +2905,157 @@
             const btn = document.getElementById('btn-filter-linen');
             if (btn) {
                 if (window.appState.pricelistFilterLinen) {
-                    btn.className = "px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all font-bold flex items-center space-x-1";
+                    btn.className = "px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all flex items-center space-x-1";
                 } else {
-                    btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-bold flex items-center space-x-1";
+                    btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1";
                 }
             }
             renderPricelistTable();
         };
 
-        window.setPricelist3DFilter = function(depth3D) {
-            window.appState.pricelistFilter3D = depth3D;
-
-            ['none', '3cm', '5cm'].forEach(d => {
-                const btn = document.getElementById(`btn-filter-3d-${d}`);
-                if (btn) {
-                    if (d === depth3D) {
-                        btn.className = "px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all font-bold";
-                    } else {
-                        btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-bold";
-                    }
+        window.togglePricelistTanpaKacaFilter = function() {
+            window.appState.pricelistFilterTanpaKaca = !window.appState.pricelistFilterTanpaKaca;
+            const btn = document.getElementById('btn-filter-tanpa-kaca');
+            if (btn) {
+                if (window.appState.pricelistFilterTanpaKaca) {
+                    btn.className = "px-2.5 py-1 rounded-lg bg-rose-600 text-white shadow-sm transition-all flex items-center space-x-1";
+                } else {
+                    btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1";
                 }
-            });
-
+            }
             renderPricelistTable();
         };
 
-        function getPricelistFramePrice(typeKey, w, h, custType, useLinen, depth3D) {
-            const res = calculateSingleFramePrice(typeKey, w, h, {
-                triplekType: 'triplek_3mm',
-                useKaca: true,
-                useLinen: useLinen,
-                depth3D: depth3D
-            });
-
-            if (custType === 'reseller') {
-                if (depth3D === '3cm') return useLinen ? res.r3DYes : res.r3DNo;
-                if (depth3D === '5cm') return (useLinen ? res.rYes : res.rNo) + res.extra3D_5cm;
-                return useLinen ? res.rYes : res.rNo;
+        window.setPricelist3DFilter = function(depth) {
+            if (window.appState.pricelistFilter3D === depth) {
+                window.appState.pricelistFilter3D = 'none';
             } else {
-                if (depth3D === '3cm') return useLinen ? res.k3DYes : res.k3DNo;
-                if (depth3D === '5cm') return (useLinen ? res.kYes : res.kNo) + res.extra3D_5cm;
-                return useLinen ? res.kYes : res.kNo;
+                window.appState.pricelistFilter3D = depth;
             }
-        }
 
-        window.addPricelistItemToCart = function(sizeLabel, width, height, typeKey) {
-            const filterCust = window.appState.pricelistFilterCustomer || 'konsumen';
-            const isLinen = window.appState.pricelistFilterLinen || false;
-            const depth3D = window.appState.pricelistFilter3D || 'none';
-            const isReseller = filterCust === 'reseller';
+            const btn3cm = document.getElementById('btn-filter-3d-3cm');
+            const btn5cm = document.getElementById('btn-filter-3d-5cm');
 
-            const unitPrice = getPricelistFramePrice(typeKey, width, height, isReseller ? 'reseller' : 'konsumen', isLinen, depth3D);
-            const stick = window.appState.rates.sticks[typeKey] || window.appState.rates.sticks['tipe_1'];
+            if (btn3cm) btn3cm.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all";
+            if (btn5cm) btn5cm.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all";
 
-            let specsNote = [];
-            if (isLinen) specsNote.push('Plus Linen');
-            if (depth3D === '3cm') specsNote.push('3D Box 3cm');
-            if (depth3D === '5cm') specsNote.push('3D Box 5cm');
-            const noteText = specsNote.length > 0 ? specsNote.join(' + ') : 'Standard';
+            if (window.appState.pricelistFilter3D === '3cm' && btn3cm) {
+                btn3cm.className = "px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-sm transition-all";
+            } else if (window.appState.pricelistFilter3D === '5cm' && btn5cm) {
+                btn5cm.className = "px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-sm transition-all";
+            }
 
-            const cartItem = {
-                id: Date.now().toString(),
-                name: `${stick.name} (${sizeLabel}) [${noteText}]`,
-                sizeLabel: sizeLabel,
-                quantity: 1,
-                unitPrice: unitPrice,
-                totalPrice: unitPrice,
-                useLinen: isLinen,
-                depth3D: depth3D,
-                frameCode: '',
-                notes: `Daftar Harga Standar (${isReseller ? 'Reseller' : 'Konsumen'})`
-            };
-
-            window.appState.cart.push(cartItem);
-            updateCartBadge();
-            showToast(`Produk ${stick.name} (${sizeLabel}) ditambahkan ke keranjang!`, 'success');
+            renderPricelistTable();
         };
 
         window.renderPricelistTable = function() {
             const headerEl = document.getElementById('pricelist-table-header');
             const bodyEl = document.getElementById('pricelist-table-body');
-            const searchVal = (document.getElementById('pricelist-search-input')?.value || '').toLowerCase();
-            const typeFilter = document.getElementById('pricelist-select-type')?.value || 'all';
+            const searchInput = document.getElementById('pricelist-search-input');
+            const typeSelect = document.getElementById('pricelist-select-type');
+            const countBadge = document.getElementById('pricelist-count-badge');
 
-            if (!bodyEl || !headerEl) return;
+            if (!headerEl || !bodyEl) return;
+
+            const searchVal = (searchInput?.value || '').toLowerCase().trim();
+            const typeFilter = typeSelect?.value || 'all';
 
             const filterCust = window.appState.pricelistFilterCustomer || 'all';
-            const isLinen = window.appState.pricelistFilterLinen || false;
+            const isLinen = !!window.appState.pricelistFilterLinen;
+            const isTanpaKaca = !!window.appState.pricelistFilterTanpaKaca;
+            const useKaca = !isTanpaKaca;
             const depth3D = window.appState.pricelistFilter3D || 'none';
 
-            const sizes = (window.appState.standardSizes || []).filter(s => {
-                const label = (s.label || `${s.width}x${s.height} cm`).toLowerCase();
-                return !searchVal || label.includes(searchVal);
-            });
+            let sizes = window.appState.standardSizes || [];
 
-            updateElemText('pricelist-count-badge', sizes.length);
+            if (searchVal) {
+                sizes = sizes.filter(s => {
+                    const labelStr = (s.label || '').toLowerCase();
+                    const dimStr = `${s.width}x${s.height}`;
+                    const dimStrSpace = `${s.width} x ${s.height}`;
+                    return labelStr.includes(searchVal) || dimStr.includes(searchVal) || dimStrSpace.includes(searchVal);
+                });
+            }
 
-            const typeKeys = typeFilter === 'all' 
-                ? Object.keys(window.appState.rates.sticks)
+            if (countBadge) countBadge.innerText = sizes.length;
+
+            const typeKeys = typeFilter === 'all'
+                ? Object.keys(window.appState.rates.sticks).sort((a, b) => {
+                    const numA = parseInt(a.replace('tipe_', ''), 10) || 0;
+                    const numB = parseInt(b.replace('tipe_', ''), 10) || 0;
+                    return numA - numB;
+                })
                 : [typeFilter];
 
-            // Header construction with dynamic stick width (cm)
-            let headerHTML = `<th class="p-2.5">UKURAN / PRESET</th>`;
-            typeKeys.forEach(k => {
-                const st = window.appState.rates.sticks[k];
-                headerHTML += `<th class="p-2.5 text-center">${st.name} (${st.widthCm} cm)</th>`;
-            });
-            headerHTML += `<th class="p-2.5 text-center">AKSI</th>`;
-            headerEl.innerHTML = headerHTML;
+            headerEl.innerHTML = `
+                <th class="p-3">UKURAN / PRESET</th>
+                <th class="p-3">TIPE BINGKAI</th>
+                <th class="p-3 text-right">HARGA</th>
+                <th class="p-3 text-center">STATUS STOK</th>
+                <th class="p-3 text-center">AKSI</th>
+            `;
 
-            // Rows construction
-            bodyEl.innerHTML = sizes.map(s => {
+            let rowsHtml = '';
+            let totalRowsCount = 0;
+
+            sizes.forEach(s => {
                 const labelText = s.label || `${s.width}x${s.height} cm`;
-                let row = `<tr class="hover:bg-slate-50 border-b border-slate-100">
-                    <td class="p-2.5 font-bold text-slate-800">${labelText}</td>`;
-                
-                typeKeys.forEach(k => {
+
+                typeKeys.forEach((k, idx) => {
+                    totalRowsCount++;
+                    const st = window.appState.rates.sticks[k] || { name: k, widthCm: '' };
                     let priceDisplay = '';
+
                     if (filterCust === 'reseller') {
-                        const price = getPricelistFramePrice(k, s.width, s.height, 'reseller', isLinen, depth3D);
-                        priceDisplay = `<span class="text-emerald-700 font-extrabold">${formatRp(price)}</span>`;
+                        const price = getPricelistFramePrice(k, s.width, s.height, 'reseller', isLinen, depth3D, useKaca);
+                        priceDisplay = `<span class="text-emerald-700 font-extrabold text-sm font-mono">${formatRp(price)}</span>`;
                     } else if (filterCust === 'konsumen') {
-                        const price = getPricelistFramePrice(k, s.width, s.height, 'konsumen', isLinen, depth3D);
-                        priceDisplay = `<span class="text-amber-800 font-extrabold">${formatRp(price)}</span>`;
+                        const price = getPricelistFramePrice(k, s.width, s.height, 'konsumen', isLinen, depth3D, useKaca);
+                        priceDisplay = `<span class="text-amber-800 font-extrabold text-sm font-mono">${formatRp(price)}</span>`;
                     } else {
-                        // All Customers
-                        const priceK = getPricelistFramePrice(k, s.width, s.height, 'konsumen', isLinen, depth3D);
-                        const priceR = getPricelistFramePrice(k, s.width, s.height, 'reseller', isLinen, depth3D);
-                        priceDisplay = `<div class="text-[10px] leading-tight">
-                            <span class="text-amber-800 font-bold block">K: ${formatRp(priceK)}</span>
-                            <span class="text-emerald-700 font-bold block">R: ${formatRp(priceR)}</span>
+                        const priceK = getPricelistFramePrice(k, s.width, s.height, 'konsumen', isLinen, depth3D, useKaca);
+                        const priceR = getPricelistFramePrice(k, s.width, s.height, 'reseller', isLinen, depth3D, useKaca);
+                        priceDisplay = `<div class="text-[11px] leading-tight font-mono">
+                            <span class="text-amber-800 font-extrabold block">Konsumen: ${formatRp(priceK)}</span>
+                            <span class="text-emerald-700 font-extrabold block">Reseller: ${formatRp(priceR)}</span>
                         </div>`;
                     }
 
-                    row += `<td class="p-2.5 text-center font-mono font-bold">${priceDisplay}</td>`;
+                    const stockBadge = getStockStatusBadge(s.width, s.height, k, isLinen, depth3D);
+
+                    rowsHtml += `<tr class="hover:bg-slate-50 border-b border-slate-200">
+                        <td class="p-3 font-extrabold text-slate-800 text-xs bg-slate-50/50">
+                            ${idx === 0 ? `<div class="flex items-center space-x-1"><i class="fa-solid fa-expand text-brand-600 text-xs"></i><span>${labelText}</span></div>` : `<span class="text-slate-400 text-[10px] pl-4">↳ ${labelText}</span>`}
+                        </td>
+                        <td class="p-3 font-bold text-slate-700 text-xs">
+                            ${st.name} <span class="text-[10px] text-slate-500 font-normal">(${st.widthCm} cm)</span>
+                        </td>
+                        <td class="p-3 text-right font-bold">
+                            ${priceDisplay}
+                        </td>
+                        <td class="p-3 text-center">
+                            ${stockBadge}
+                        </td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center space-x-1.5">
+                                <button type="button" onclick="addPricelistItemToCart('${labelText}', ${s.width}, ${s.height}, '${k}')" title="+ Masukkan Keranjang" class="px-2.5 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm flex items-center space-x-1">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                    <span>Keranjang</span>
+                                </button>
+                                <button type="button" onclick="addPricelistItemToCart('${labelText}', ${s.width}, ${s.height}, '${k}'); openCheckoutModal();" title="Beli / Checkout Langsung" class="px-2.5 py-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-extrabold transition-all shadow-sm flex items-center space-x-1">
+                                    <i class="fa-solid fa-bolt"></i>
+                                    <span>Checkout</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>`;
                 });
-
-                const actionTypeKey = typeKeys[0] || 'tipe_1';
-
-                row += `<td class="p-2.5 text-center">
-                    <div class="flex items-center justify-center space-x-1.5">
-                        <button type="button" onclick="addPricelistItemToCart('${labelText}', ${s.width}, ${s.height}, '${actionTypeKey}')" title="+ Masukkan Keranjang" class="p-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm flex items-center space-x-1">
-                            <i class="fa-solid fa-cart-plus"></i>
-                            <span class="hidden sm:inline text-[11px]">Keranjang</span>
-                        </button>
-                        <button type="button" onclick="addPricelistItemToCart('${labelText}', ${s.width}, ${s.height}, '${actionTypeKey}'); openCheckoutModal();" title="Beli / Checkout Langsung" class="p-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-extrabold transition-all shadow-sm flex items-center space-x-1">
-                            <i class="fa-solid fa-bolt"></i>
-                            <span class="hidden sm:inline text-[11px]">Checkout</span>
-                        </button>
-                    </div>
-                </td>`;
-
-                row += `</tr>`;
-                return row;
-            }).join('');
-        };
-
-        /* Orders Dashboard Renderer */
-        window.renderOrdersLogTable = function() {
-            const body = document.getElementById('orders-table-body');
-            if (!body) return;
-
-            const search = (document.getElementById('order-search-input')?.value || '').toLowerCase();
-            const workerFilter = document.getElementById('order-worker-filter')?.value || 'all';
-            const statusFilter = document.getElementById('order-status-filter')?.value || 'all';
-
-            let orders = window.appState.ordersLog || [];
-
-            orders = orders.filter(o => {
-                const matchSearch = !search || (o.customerName || '').toLowerCase().includes(search) || (o.id || '').toLowerCase().includes(search);
-                const matchWorker = workerFilter === 'all' || o.cashierId === workerFilter || o.workerName === workerFilter;
-                const matchStatus = statusFilter === 'all' || o.orderStatus === statusFilter;
-                return matchSearch && matchWorker && matchStatus;
             });
 
-            if (orders.length === 0) {
-                body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada pesanan terdaftar.</td></tr>`;
-                return;
-            }
-
-            body.innerHTML = orders.map(o => `
-                <tr class="hover:bg-slate-50 border-b border-slate-100">
-                    <td class="p-3">
-                        <p class="font-bold text-slate-800 font-mono text-[11px]">${o.id}</p>
-                        <p class="text-[10px] text-slate-400">${o.dateStr || ''}</p>
-                    </td>
-                    <td class="p-3">
-                        <p class="font-bold text-slate-800">${o.customerName}</p>
-                        ${o.customerPhone ? `<p class="text-[10px] text-brand-600 font-mono">${o.customerPhone}</p>` : ''}
-                    </td>
-                    <td class="p-3 font-semibold text-slate-700">${o.cashierName || '-'}</td>
-                    <td class="p-3">
-                        <div class="max-h-24 overflow-y-auto space-y-1 text-[11px]">
-                            ${(o.items || []).map(i => `<p>• ${i.name} (${i.quantity}x)</p>`).join('')}
-                        </div>
-                    </td>
-                    <td class="p-3 text-right font-mono font-bold text-emerald-600">${formatRp(o.totalBill)}</td>
-                    <td class="p-3 text-center">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${o.paymentStatus === 'lunas' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'}">${o.paymentStatus}</span>
-                    </td>
-                    <td class="p-3 text-center">
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase ${o.orderStatus === 'Selesai' ? 'bg-emerald-100 text-emerald-800' : o.orderStatus === 'Diproses' ? 'bg-amber-100 text-amber-800' : 'bg-blue-100 text-blue-800'}">${o.orderStatus}</span>
-                        ${o.workerName ? `<p class="text-[9px] text-slate-400 mt-0.5">Oleh: ${o.workerName}</p>` : ''}
-                    </td>
-                    <td class="p-3 text-center">
-                        <button type="button" onclick="updateOrderStatus('${o.id}', 'Selesai')" class="px-2 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded text-[10px] font-bold">Selesai</button>
-                    </td>
-                </tr>
-            `).join('');
-        };
-
-        window.updateOrderStatus = async function(orderId, newStatus) {
-            const ord = (window.appState.ordersLog || []).find(o => o.id === orderId);
-            if (ord) {
-                ord.orderStatus = newStatus;
-                ord.workerName = window.appState.activeCashierName;
-                renderOrdersLogTable();
-
-                if (db && isFirebaseConnected) {
-                    try {
-                        const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'orders', orderId);
-                        await setDoc(docRef, { orderStatus: newStatus, workerName: window.appState.activeCashierName }, { merge: true });
-                    } catch(e) { console.warn("Update status error:", e); }
-                }
-                showToast(`Status order ${orderId} diubah menjadi ${newStatus}`, 'success');
+            if (totalRowsCount === 0) {
+                bodyEl.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 font-bold">Tidak ada ukuran / tipe bingkai yang cocok.</td></tr>`;
+            } else {
+                bodyEl.innerHTML = rowsHtml;
             }
         };
 
@@ -2914,7 +3098,6 @@
             showToast('Semua data order telah di-reset!', 'info');
         };
 
-        /* Owner Rate Input Event Handlers */
         window.updateOverheadPercent = function(val) {
             saveHistoryState();
             window.appState.rates.overheadPercent = parseFloat(val) || 0;
@@ -2986,23 +3169,6 @@
             if (modal) modal.classList.add('hidden');
         };
 
-        window.handleSaveSizeLabel = function(e) {
-            if (e) e.preventDefault();
-            const dimDisplay = document.getElementById('edit-size-dim-display')?.value || '';
-            const newLabel = document.getElementById('edit-size-label-input')?.value.trim();
-            const nums = dimDisplay.replace(/[^0-9x]/g, '').split('x');
-            const w = parseFloat(nums[0]), h = parseFloat(nums[1]);
-            const item = (window.appState.standardSizes || []).find(s => s.width === w && s.height === h);
-            if (item && newLabel) {
-                item.label = newLabel;
-                renderPricelistTable();
-                triggerAutoSaveToCloud();
-                showToast('Label ukuran berhasil diperbarui!', 'success');
-            }
-            closeEditSizeLabelModal();
-        };
-
-        /* Stock Management Functions */
         window.closeAddStockModal = function() {
             const modal = document.getElementById('add-stock-modal');
             if (modal) modal.classList.add('hidden');
@@ -3127,7 +3293,6 @@
             document.getElementById('stock-input-code').value = '';
             document.getElementById('stock-input-desc').value = '';
             
-            // Populate stock frame types
             const typeSelect = document.getElementById('stock-frame-type');
             if (typeSelect && window.appState.rates?.sticks) {
                 typeSelect.innerHTML = Object.keys(window.appState.rates.sticks).map(k => {
@@ -3139,102 +3304,204 @@
             document.getElementById('add-stock-modal').classList.remove('hidden');
         };
 
-        window.handleSaveStockItem = function(e) {
-            if (e) e.preventDefault();
-            const editId = document.getElementById('stock-edit-id').value;
-            const category = document.getElementById('stock-input-category').value;
-            const location = document.getElementById('stock-input-location').value || 'toko';
-            const name = document.getElementById('stock-input-name').value.trim();
-            const hpp = parseRawNumber(document.getElementById('stock-input-hpp').value);
-            const sellingPrice = parseRawNumber(document.getElementById('stock-input-price').value);
-            const qty = parseInt(document.getElementById('stock-input-qty').value, 10) || 0;
-            const code = document.getElementById('stock-input-code').value.trim();
-            const desc = document.getElementById('stock-input-desc').value.trim();
+        window.renderOrdersLogTable = function() {
+            const body = document.getElementById('orders-table-body');
+            if (!body) return;
 
-            const width = parseFloat(document.getElementById('stock-frame-width')?.value) || 0;
-            const height = parseFloat(document.getElementById('stock-frame-height')?.value) || 0;
-            const typeKey = document.getElementById('stock-frame-type')?.value || '';
+            const searchVal = (document.getElementById('order-search-input')?.value || '').toLowerCase();
+            const workerFilter = document.getElementById('order-worker-filter')?.value || 'all';
+            const dateFilter = document.getElementById('order-date-filter')?.value || 'week';
+            const statusFilter = document.getElementById('order-status-filter')?.value || 'all';
 
-            if (editId) {
-                const item = (window.appState.stockItems || []).find(i => i.id === editId);
-                if (item) {
-                    Object.assign(item, { category, location, name, hpp, sellingPrice, qty, code, desc, width, height, typeKey });
+            let orders = window.appState.ordersLog || [];
+
+            const now = Date.now();
+            const oneDay = 24 * 60 * 60 * 1000;
+            orders = orders.filter(ord => {
+                const orderTime = ord.timestamp || 0;
+                if (dateFilter === 'today') {
+                    const todayStart = new Date().setHours(0,0,0,0);
+                    if (orderTime < todayStart) return false;
+                } else if (dateFilter === 'week') {
+                    if (now - orderTime > 7 * oneDay) return false;
+                } else if (dateFilter === 'month') {
+                    if (now - orderTime > 30 * oneDay) return false;
                 }
-            } else {
-                const newItem = {
-                    id: 'stk-' + Date.now().toString(),
-                    category, location, name, hpp, sellingPrice, qty, code, desc, width, height, typeKey
-                };
-                window.appState.stockItems.push(newItem);
-            }
 
-            saveMasterRatesToFirestore();
-            renderStockTable();
-            closeAddStockModal();
-            showToast('Stok produk berhasil disimpan!', 'success');
-        };
+                if (workerFilter !== 'all') {
+                    const matchesCashier = ord.cashierId === workerFilter || (ord.cashierName || '').toLowerCase().includes(workerFilter.toLowerCase());
+                    const matchesWorker = ord.workerId === workerFilter || (ord.workerName || '').toLowerCase().includes(workerFilter.toLowerCase());
+                    if (!matchesCashier && !matchesWorker) return false;
+                }
 
-        window.editStockItem = function(id) {
-            const item = (window.appState.stockItems || []).find(i => i.id === id);
-            if (!item) return;
+                if (statusFilter !== 'all' && ord.orderStatus !== statusFilter) return false;
 
-            openAddStockModal();
-            document.getElementById('stock-edit-id').value = item.id;
-            document.getElementById('stock-modal-title').innerText = 'Edit Stok Produk (Owner)';
-            document.getElementById('stock-input-category').value = item.category || 'Bingkai Foto';
-            document.getElementById('stock-input-location').value = item.location || 'toko';
-            document.getElementById('stock-input-name').value = item.name || '';
-            document.getElementById('stock-input-hpp').value = formatNumber(item.hpp || 0);
-            document.getElementById('stock-input-price').value = formatNumber(item.sellingPrice || 0);
-            document.getElementById('stock-input-qty').value = item.qty || 0;
-            document.getElementById('stock-input-code').value = item.code || '';
-            document.getElementById('stock-input-desc').value = item.desc || '';
+                if (searchVal) {
+                    const matchCust = (ord.customerName || '').toLowerCase().includes(searchVal);
+                    const matchId = (ord.id || '').toLowerCase().includes(searchVal);
+                    const matchPhone = (ord.customerPhone || '').toLowerCase().includes(searchVal);
+                    if (!matchCust && !matchId && !matchPhone) return false;
+                }
 
-            if (item.width) document.getElementById('stock-frame-width').value = item.width;
-            if (item.height) document.getElementById('stock-frame-height').value = item.height;
-            if (item.typeKey) document.getElementById('stock-frame-type').value = item.typeKey;
+                return true;
+            });
 
-            onStockCategoryChange();
-        };
+            let totalCompletedPcs = 0;
+            let totalProcessPcs = 0;
+            let totalOmset = 0;
 
-        window.addStockToCart = function(id) {
-            const stk = (window.appState.stockItems || []).find(i => i.id === id);
-            if (!stk || (stk.qty || 0) <= 0) {
-                showToast('Stok produk habis!', 'error');
+            orders.forEach(ord => {
+                totalOmset += (ord.totalBill || 0);
+                (ord.items || []).forEach(it => {
+                    const qty = parseInt(it.quantity, 10) || 1;
+                    if (ord.orderStatus === 'Selesai') {
+                        totalCompletedPcs += qty;
+                    } else if (ord.orderStatus === 'Diproses' || ord.orderStatus === 'Baru') {
+                        totalProcessPcs += qty;
+                    }
+                });
+            });
+
+            updateElemText('perf-completed-pcs', `${totalCompletedPcs} Pcs`);
+            updateElemText('perf-process-pcs', `${totalProcessPcs} Pcs`);
+            updateElemText('perf-total-orders', `${orders.length} Order`);
+            updateElemText('perf-total-omset', formatRp(totalOmset));
+
+            if (orders.length === 0) {
+                body.innerHTML = `<tr><td colspan="8" class="p-6 text-center text-slate-400">Belum ada pesanan yang sesuai filter.</td></tr>`;
                 return;
             }
 
-            const isGudang = (stk.location || 'toko') === 'gudang';
-            const locationText = isGudang ? '📦 Ready Gudang (Perlu Diambil)' : '🏪 Ready Toko';
+            const isOwner = window.appState.currentRole === 'owner';
 
-            const cartItem = {
-                id: Date.now().toString(),
-                name: `${stk.name} (${isGudang ? 'Ready Gudang' : 'Ready Toko'})`,
-                sizeLabel: stk.width && stk.height ? `${stk.width}x${stk.height} cm` : 'Pcs',
-                quantity: 1,
-                unitPrice: stk.sellingPrice,
-                totalPrice: stk.sellingPrice,
-                useLinen: false,
-                depth3D: 'none',
-                frameCode: stk.code || '',
-                notes: `Stok: ${locationText}`
-            };
+            body.innerHTML = orders.map(ord => {
+                const itemsListHtml = (ord.items || []).map(it => `
+                    <div class="bg-slate-100 p-1.5 rounded-lg text-[11px] leading-tight mb-1 border border-slate-200">
+                        <p class="font-bold text-slate-800">${it.name}</p>
+                        <div class="flex items-center space-x-1.5 text-[10px] text-slate-600 flex-wrap mt-0.5">
+                            <span>Qty: <b>${it.quantity || 1}</b></span>
+                            ${it.stockStatusNote ? `<span class="px-1 py-0.2 bg-white rounded border border-slate-300 font-extrabold ${it.stockStatusNote.includes('Proses') ? 'text-amber-700' : 'text-emerald-700'}">${it.stockStatusNote}</span>` : ''}
+                            ${it.notes ? `<span class="text-slate-500">(${it.notes})</span>` : ''}
+                        </div>
+                    </div>
+                `).join('');
 
-            window.appState.cart.push(cartItem);
-            updateCartBadge();
-            
-            if (isGudang) {
-                showToast('⚠️ Produk dimasukkan ke keranjang (Status: Ready di Gudang - Perlu diambil)', 'info');
-            } else {
-                showToast('Produk ready toko ditambahkan ke keranjang!', 'success');
+                let payBadge = ord.paymentStatus === 'lunas' 
+                    ? `<span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-emerald-100 text-emerald-800 border border-emerald-300">Lunas</span>`
+                    : ord.paymentStatus === 'dp'
+                    ? `<span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-amber-100 text-amber-800 border border-amber-300">DP ${formatRp(ord.dpAmount || 0)}</span>`
+                    : `<span class="px-2 py-0.5 rounded text-[10px] font-extrabold uppercase bg-rose-100 text-rose-800 border border-rose-300">Belum Bayar</span>`;
+
+                const workerNote = ord.workerName ? `<p class="text-[10px] font-bold text-slate-500 mt-1"><i class="fa-solid fa-user-gear mr-1"></i>${ord.workerName}</p>` : '';
+
+                return `
+                    <tr class="hover:bg-slate-50 border-b border-slate-200">
+                        <td class="p-3">
+                            <p class="font-extrabold text-slate-900 text-xs font-mono">${ord.id}</p>
+                            <p class="text-[10px] text-slate-500">${ord.dateStr || '-'}</p>
+                        </td>
+                        <td class="p-3 font-bold text-slate-800">
+                            <p class="text-xs">${ord.customerName || 'Pelanggan'}</p>
+                            ${ord.customerPhone ? `<p class="text-[10px] text-brand-600 font-mono">${ord.customerPhone}</p>` : ''}
+                        </td>
+                        <td class="p-3 text-xs font-bold text-slate-700">
+                            <p>${ord.cashierName || '-'}</p>
+                            <span class="text-[10px] text-slate-400 uppercase font-normal">${ord.paymentMethod || 'cash'}</span>
+                        </td>
+                        <td class="p-3 max-w-xs">
+                            <div class="max-h-32 overflow-y-auto pr-1">
+                                ${itemsListHtml}
+                            </div>
+                        </td>
+                        <td class="p-3 text-right font-mono font-black text-slate-900 text-xs">
+                            ${formatRp(ord.totalBill || 0)}
+                        </td>
+                        <td class="p-3 text-center">
+                            ${payBadge}
+                        </td>
+                        <td class="p-3 text-center">
+                            <select onchange="updateOrderStatus('${ord.id}', this.value)" class="px-2 py-1 bg-white border border-slate-300 rounded-lg text-xs font-bold text-slate-800 focus:ring-2 focus:ring-brand-500">
+                                <option value="Baru" ${ord.orderStatus === 'Baru' ? 'selected' : ''}>🔥 Baru</option>
+                                <option value="Diproses" ${ord.orderStatus === 'Diproses' ? 'selected' : ''}>⏳ Diproses</option>
+                                <option value="Selesai" ${ord.orderStatus === 'Selesai' ? 'selected' : ''}>✅ Selesai</option>
+                                <option value="Dibatalkan" ${ord.orderStatus === 'Dibatalkan' ? 'selected' : ''}>❌ Batal</option>
+                            </select>
+                            ${workerNote}
+                        </td>
+                        <td class="p-3 text-center">
+                            <div class="flex items-center justify-center space-x-1.5">
+                                <button type="button" onclick="printReceipt('${ord.id}')" title="Cetak Struk" class="px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm">
+                                    <i class="fa-solid fa-print"></i>
+                                </button>
+                                ${isOwner ? `
+                                    <button type="button" onclick="deleteSingleOrder('${ord.id}')" title="Hapus Order" class="p-1 text-slate-400 hover:text-rose-600 transition-colors">
+                                        <i class="fa-solid fa-trash-can"></i>
+                                    </button>
+                                ` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        };
+
+        window.updateOrderStatus = async function(orderId, newStatus) {
+            const activeWorker = window.appState.activeCashierName || 'Karyawan';
+            const ord = (window.appState.ordersLog || []).find(o => o.id === orderId);
+            if (ord) {
+                ord.orderStatus = newStatus;
+                ord.workerName = `Diselesaikan ${activeWorker}`;
             }
+
+            if (db && isFirebaseConnected) {
+                try {
+                    const ordersColRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+                    const qSnap = await getDocs(ordersColRef);
+                    qSnap.forEach(async (d) => {
+                        if (d.data().id === orderId || d.id === orderId) {
+                            await setDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', d.id), {
+                                orderStatus: newStatus,
+                                workerName: `Diselesaikan ${activeWorker}`
+                            }, { merge: true });
+                        }
+                    });
+                } catch(e) { console.warn("Update status error:", e); }
+            }
+
+            renderOrdersLogTable();
+            showToast(`Status pesanan ${orderId} diubah ke ${newStatus}`, 'info');
+        };
+
+        window.deleteSingleOrder = async function(orderId) {
+            window.appState.ordersLog = (window.appState.ordersLog || []).filter(o => o.id !== orderId);
+            if (db && isFirebaseConnected) {
+                try {
+                    const ordersColRef = collection(db, 'artifacts', appId, 'public', 'data', 'orders');
+                    const qSnap = await getDocs(ordersColRef);
+                    qSnap.forEach(async (d) => {
+                        if (d.data().id === orderId || d.id === orderId) {
+                            await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'orders', d.id));
+                        }
+                    });
+                } catch(e) { console.warn("Delete order error:", e); }
+            }
+            renderOrdersLogTable();
+            showToast('Pesanan berhasil dihapus.', 'info');
+        };
+
+        window.printReceipt = function(orderId) {
+            const ord = (window.appState.ordersLog || []).find(o => o.id === orderId);
+            if (!ord) return;
+            showToast(`Mencetak struk pesanan ${ord.id}...`, 'info');
+            window.print();
         };
 
         window.onStockPresetChange = function() {
-            const preset = document.getElementById('stock-frame-preset').value;
+            const preset = document.getElementById('stock-frame-preset')?.value;
             const wInput = document.getElementById('stock-frame-width');
             const hInput = document.getElementById('stock-frame-height');
-            
+            if (!wInput || !hInput) return;
+
             if (preset === '8R') { wInput.value = 20; hInput.value = 25; }
             else if (preset === '10R') { wInput.value = 26; hInput.value = 31; }
             else if (preset === '12R') { wInput.value = 30; hInput.value = 40; }
@@ -3244,158 +3511,135 @@
         };
 
         window.updateStockModalAutoPrice = function() {
-            const cat = document.getElementById('stock-input-category').value;
-            if (cat !== 'Bingkai Foto' && cat !== 'Frame Mahar 3D') return;
+            const frameType = document.getElementById('stock-frame-type')?.value || 'tipe_1';
+            const w = parseFloat(document.getElementById('stock-frame-width')?.value) || 20;
+            const h = parseFloat(document.getElementById('stock-frame-height')?.value) || 25;
+            const useLinen = document.getElementById('stock-check-linen')?.checked || false;
+            const depth3D = document.getElementById('stock-select-3d')?.value || 'none';
 
-            const typeKey = document.getElementById('stock-frame-type').value || 'tipe_1';
-            const w = parseFloat(document.getElementById('stock-frame-width').value) || 20;
-            const h = parseFloat(document.getElementById('stock-frame-height').value) || 25;
-            const useLinen = document.getElementById('stock-check-linen').checked;
-            const depth3D = document.getElementById('stock-select-3d').value;
-
-            const res = calculateSingleFramePrice(typeKey, w, h, {
+            const frameRes = calculateSingleFramePrice(frameType, w, h, {
                 triplekType: 'triplek_3mm',
                 useKaca: true,
                 useLinen: useLinen,
                 depth3D: depth3D
             });
 
-            let sellingPrice = res.kNo;
-            if (depth3D === '3cm') sellingPrice = useLinen ? res.k3DYes : res.k3DNo;
-            else if (depth3D === '5cm') sellingPrice = (useLinen ? res.kYes : res.kNo) + res.extra3D_5cm;
-            else sellingPrice = useLinen ? res.kYes : res.kNo;
+            const hppInput = document.getElementById('stock-input-hpp');
+            const priceInput = document.getElementById('stock-input-price');
 
-            document.getElementById('stock-input-hpp').value = formatNumber(res.modalTotal);
-            document.getElementById('stock-input-price').value = formatNumber(sellingPrice);
+            if (hppInput) hppInput.value = formatNumber(frameRes.modalTotal);
+            if (priceInput) {
+                let sellingPrice = frameRes.kNo;
+                if (depth3D === '3cm') sellingPrice = useLinen ? frameRes.k3DYes : frameRes.k3DNo;
+                else if (depth3D === '5cm') sellingPrice = (useLinen ? frameRes.kYes : frameRes.kNo) + frameRes.extra3D_5cm;
+                else sellingPrice = useLinen ? frameRes.kYes : frameRes.kNo;
+
+                priceInput.value = formatNumber(sellingPrice);
+            }
         };
 
-        window.handleSaveStockItem = function(e) {
+        window.handleSaveStockItem = async function(e) {
             if (e) e.preventDefault();
             const editId = document.getElementById('stock-edit-id').value;
-            const category = document.getElementById('stock-input-category').value;
-            const name = document.getElementById('stock-input-name').value.trim();
+            const cat = document.getElementById('stock-input-category').value;
+            const name = document.getElementById('stock-input-name').value;
+            const loc = document.getElementById('stock-input-location').value;
             const hpp = parseRawNumber(document.getElementById('stock-input-hpp').value);
-            const sellingPrice = parseRawNumber(document.getElementById('stock-input-price').value);
+            const price = parseRawNumber(document.getElementById('stock-input-price').value);
             const qty = parseInt(document.getElementById('stock-input-qty').value, 10) || 0;
             const code = document.getElementById('stock-input-code').value.trim();
             const desc = document.getElementById('stock-input-desc').value.trim();
-
-            const width = parseFloat(document.getElementById('stock-frame-width')?.value) || 0;
-            const height = parseFloat(document.getElementById('stock-frame-height')?.value) || 0;
-            const typeKey = document.getElementById('stock-frame-type')?.value || '';
+            const w = parseFloat(document.getElementById('stock-frame-width')?.value) || null;
+            const h = parseFloat(document.getElementById('stock-frame-height')?.value) || null;
+            const frameType = document.getElementById('stock-frame-type')?.value || 'tipe_1';
+            const useLinen = document.getElementById('stock-check-linen')?.checked || false;
+            const depth3D = document.getElementById('stock-select-3d')?.value || 'none';
 
             if (editId) {
-                const item = (window.appState.stockItems || []).find(i => i.id === editId);
+                const item = window.appState.stockItems.find(s => s.id === editId);
                 if (item) {
-                    Object.assign(item, { category, name, hpp, sellingPrice, qty, code, desc, width, height, typeKey });
+                    item.category = cat;
+                    item.name = name;
+                    item.location = loc;
+                    item.hpp = hpp;
+                    item.sellingPrice = price;
+                    item.qty = qty;
+                    item.code = code;
+                    item.desc = desc;
+                    item.useLinen = useLinen;
+                    item.depth3D = depth3D;
+                    if (cat === 'Bingkai Foto' || cat === 'Frame Mahar 3D') {
+                        item.width = w;
+                        item.height = h;
+                        item.typeKey = frameType;
+                    }
                 }
             } else {
                 const newItem = {
-                    id: 'stk-' + Date.now().toString(),
-                    category, name, hpp, sellingPrice, qty, code, desc, width, height, typeKey
+                    id: 'stk-' + Date.now().toString().slice(-6),
+                    category: cat,
+                    name: name,
+                    location: loc,
+                    hpp: hpp,
+                    sellingPrice: price,
+                    qty: qty,
+                    code: code,
+                    desc: desc,
+                    useLinen: useLinen,
+                    depth3D: depth3D,
+                    width: (cat === 'Bingkai Foto' || cat === 'Frame Mahar 3D') ? w : null,
+                    height: (cat === 'Bingkai Foto' || cat === 'Frame Mahar 3D') ? h : null,
+                    typeKey: (cat === 'Bingkai Foto' || cat === 'Frame Mahar 3D') ? frameType : null
                 };
-                window.appState.stockItems.push(newItem);
+                window.appState.stockItems.unshift(newItem);
             }
 
-            saveMasterRatesToFirestore();
-            renderStockTable();
             closeAddStockModal();
+            renderStockTable();
+            saveMasterRatesToFirestore();
             showToast('Stok produk berhasil disimpan!', 'success');
         };
 
-        window.editStockItem = function(id) {
-            const item = (window.appState.stockItems || []).find(i => i.id === id);
+        window.editStockItem = function(stockId) {
+            const item = window.appState.stockItems.find(s => s.id === stockId);
             if (!item) return;
 
-            openAddStockModal();
             document.getElementById('stock-edit-id').value = item.id;
             document.getElementById('stock-modal-title').innerText = 'Edit Stok Produk (Owner)';
             document.getElementById('stock-input-category').value = item.category || 'Bingkai Foto';
             document.getElementById('stock-input-name').value = item.name || '';
+            document.getElementById('stock-input-location').value = item.location || 'toko';
             document.getElementById('stock-input-hpp').value = formatNumber(item.hpp || 0);
             document.getElementById('stock-input-price').value = formatNumber(item.sellingPrice || 0);
             document.getElementById('stock-input-qty').value = item.qty || 0;
             document.getElementById('stock-input-code').value = item.code || '';
             document.getElementById('stock-input-desc').value = item.desc || '';
+            
+            const checkLinen = document.getElementById('stock-check-linen');
+            if (checkLinen) checkLinen.checked = !!item.useLinen;
 
-            if (item.width) document.getElementById('stock-frame-width').value = item.width;
-            if (item.height) document.getElementById('stock-frame-height').value = item.height;
-            if (item.typeKey) document.getElementById('stock-frame-type').value = item.typeKey;
+            const select3d = document.getElementById('stock-select-3d');
+            if (select3d) select3d.value = item.depth3D || 'none';
 
             onStockCategoryChange();
+            document.getElementById('add-stock-modal').classList.remove('hidden');
         };
 
-        window.deleteStockItem = function(id) {
-            window.appState.stockItems = (window.appState.stockItems || []).filter(i => i.id !== id);
-            saveMasterRatesToFirestore();
+        window.deleteStockItem = function(stockId) {
+            window.appState.stockItems = window.appState.stockItems.filter(s => s.id !== stockId);
             renderStockTable();
-            showToast('Produk dihapus dari stok.', 'info');
+            saveMasterRatesToFirestore();
+            showToast('Stok produk berhasil dihapus.', 'info');
         };
 
-        window.addStockToCart = function(id) {
-            const stk = (window.appState.stockItems || []).find(i => i.id === id);
-            if (!stk || (stk.qty || 0) <= 0) {
-                showToast('Stok produk habis!', 'error');
-                return;
-            }
-
-            const cartItem = {
-                id: Date.now().toString(),
-                name: `${stk.name} (Ready Stock)`,
-                sizeLabel: stk.width && stk.height ? `${stk.width}x${stk.height} cm` : 'Pcs',
-                quantity: 1,
-                unitPrice: stk.sellingPrice,
-                totalPrice: stk.sellingPrice,
-                useLinen: false,
-                depth3D: 'none',
-                frameCode: stk.code || '',
-                notes: 'Stok Ready Toko'
-            };
-
-            window.appState.cart.push(cartItem);
-            updateCartBadge();
-            showToast('Produk ready ditambahkan ke keranjang!', 'success');
-        };
-
-        window.exportAppDataJSON = function() {
-            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(window.appState, null, 2));
-            const dlAnchor = document.createElement('a');
-            dlAnchor.setAttribute("href", dataStr);
-            dlAnchor.setAttribute("download", `BengsGallery_Backup_${new Date().toISOString().slice(0,10)}.json`);
-            document.body.appendChild(dlAnchor);
-            dlAnchor.click();
-            dlAnchor.remove();
-        };
-
-        window.handleImportJSONFile = function(e) {
-            const file = e.target.files[0];
-            if (!file) return;
-            const reader = new FileReader();
-            reader.onload = function(evt) {
-                try {
-                    const imported = JSON.parse(evt.target.result);
-                    if (imported && imported.rates) {
-                        window.appState = imported;
-                        syncInputsFromState();
-                        calculatePrices();
-                        renderPricelistTable();
-                        renderStockTable();
-                        showToast('Data Toko berhasil di-import!', 'success');
-                    }
-                } catch(err) {
-                    showToast('Format file JSON tidak valid!', 'error');
-                }
-            };
-            reader.readAsText(file);
-        };
-
-        /* Initialization */
         window.onload = function() {
-            populateEmployeeDropdowns();
+            saveHistoryState();
             syncInputsFromState();
             calculatePrices();
+            window.populateEmployeeDropdowns();
             renderPricelistTable();
             renderStockTable();
+            renderOrdersLogTable();
             initCloudSync();
         };
     </script>
