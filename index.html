@@ -921,11 +921,20 @@
                             <button type="button" id="btn-filter-cust-reseller" onclick="setPricelistCustomerFilter('reseller')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Reseller</button>
                         </div>
 
+                        <!-- FILTER PLUS LINEN -->
+                        <div class="flex items-center space-x-1 bg-amber-50 p-1 rounded-xl border border-amber-200 text-xs font-bold">
+                            <button type="button" id="btn-filter-linen" onclick="togglePricelistLinenFilter()" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all flex items-center space-x-1">
+                                <i class="fa-solid fa-border-all text-amber-600"></i>
+                                <span>Plus Linen</span>
+                            </button>
+                        </div>
+
+                        <!-- FILTER KEDALAMAN 3D BOX -->
                         <div class="flex items-center space-x-1 bg-slate-100 p-1 rounded-xl border border-slate-200 text-xs font-bold">
-                            <span class="text-[10px] text-slate-400 px-1 uppercase"><i class="fa-solid fa-box mr-1"></i>Model:</span>
-                            <button type="button" id="btn-filter-model-all" onclick="setPricelistModelFilter('all')" class="px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all">Semua Model</button>
-                            <button type="button" id="btn-filter-model-std" onclick="setPricelistModelFilter('std')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Biasa (Std)</button>
-                            <button type="button" id="btn-filter-model-3d" onclick="setPricelistModelFilter('3d')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">Bingkai 3D</button>
+                            <span class="text-[10px] text-slate-400 px-1 uppercase"><i class="fa-solid fa-box mr-1"></i>3D Box:</span>
+                            <button type="button" id="btn-filter-3d-none" onclick="setPricelist3DFilter('none')" class="px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all">Tanpa 3D</button>
+                            <button type="button" id="btn-filter-3d-3cm" onclick="setPricelist3DFilter('3cm')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">3D 3cm</button>
+                            <button type="button" id="btn-filter-3d-5cm" onclick="setPricelist3DFilter('5cm')" class="px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all">3D 5cm</button>
                         </div>
                     </div>
                 </div>
@@ -943,13 +952,6 @@
                         <label class="block text-[11px] font-bold text-slate-600 mb-1">Pilih Tipe Bingkai:</label>
                         <select id="pricelist-select-type" onchange="renderPricelistTable()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:ring-2 focus:ring-brand-500 focus:outline-none">
                             <option value="all">Semua Tipe Bingkai (Tipe 1 - 12)</option>
-                            <option value="tipe_1">Bingkai Tipe 1 (1.5 cm)</option>
-                            <option value="tipe_2">Bingkai Tipe 2 (2.0 cm)</option>
-                            <option value="tipe_3">Bingkai Tipe 3 (3.0 cm)</option>
-                            <option value="tipe_5">Bingkai Tipe 5 (5.0 cm)</option>
-                            <option value="tipe_9">Bingkai Tipe 9 (9.0 cm)</option>
-                            <option value="tipe_10">Bingkai Tipe 10 (10.0 cm)</option>
-                            <option value="tipe_12">Bingkai Tipe 12 (12.0 cm)</option>
                         </select>
                     </div>
 
@@ -1620,7 +1622,8 @@
             ],
             
             pricelistFilterCustomer: 'all',
-            pricelistFilterModel: 'all',
+            pricelistFilterLinen: false,
+            pricelistFilter3D: 'none',
             
             employees: [
                 { id: 'prabu', name: 'Prabu', password: '123', role: 'karyawan' },
@@ -1774,6 +1777,18 @@
         window.syncInputsFromState = function() {
             const state = window.appState;
             if (!state) return;
+
+            // Populate pricelist dropdown filter dynamically with updated stick widths
+            const pricelistSelect = document.getElementById('pricelist-select-type');
+            if (pricelistSelect && state.rates && state.rates.sticks) {
+                const currentVal = pricelistSelect.value || 'all';
+                let optionsHtml = '<option value="all">Semua Tipe Bingkai (Tipe 1 - 12)</option>';
+                Object.keys(state.rates.sticks).forEach(k => {
+                    const st = state.rates.sticks[k];
+                    optionsHtml += `<option value="${k}" ${k === currentVal ? 'selected' : ''}>${st.name} (${st.widthCm} cm)</option>`;
+                });
+                pricelistSelect.innerHTML = optionsHtml;
+            }
 
             // Header Active Cashier
             const hCashier = document.getElementById('header-active-cashier');
@@ -2613,12 +2628,101 @@
         /* Pricelist Table Renderer */
         window.setPricelistCustomerFilter = function(filter) {
             window.appState.pricelistFilterCustomer = filter;
+            
+            ['all', 'konsumen', 'reseller'].forEach(f => {
+                const btn = document.getElementById(`btn-filter-cust-${f}`);
+                if (btn) {
+                    if (f === filter) {
+                        btn.className = "px-2.5 py-1 rounded-lg bg-brand-600 text-white shadow-sm transition-all font-bold";
+                    } else {
+                        btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-bold";
+                    }
+                }
+            });
+
             renderPricelistTable();
         };
 
-        window.setPricelistModelFilter = function(filter) {
-            window.appState.pricelistFilterModel = filter;
+        window.togglePricelistLinenFilter = function() {
+            window.appState.pricelistFilterLinen = !window.appState.pricelistFilterLinen;
+            const btn = document.getElementById('btn-filter-linen');
+            if (btn) {
+                if (window.appState.pricelistFilterLinen) {
+                    btn.className = "px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all font-bold flex items-center space-x-1";
+                } else {
+                    btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-bold flex items-center space-x-1";
+                }
+            }
             renderPricelistTable();
+        };
+
+        window.setPricelist3DFilter = function(depth3D) {
+            window.appState.pricelistFilter3D = depth3D;
+
+            ['none', '3cm', '5cm'].forEach(d => {
+                const btn = document.getElementById(`btn-filter-3d-${d}`);
+                if (btn) {
+                    if (d === depth3D) {
+                        btn.className = "px-2.5 py-1 rounded-lg bg-amber-600 text-white shadow-sm transition-all font-bold";
+                    } else {
+                        btn.className = "px-2.5 py-1 rounded-lg text-slate-600 hover:text-slate-900 transition-all font-bold";
+                    }
+                }
+            });
+
+            renderPricelistTable();
+        };
+
+        function getPricelistFramePrice(typeKey, w, h, custType, useLinen, depth3D) {
+            const res = calculateSingleFramePrice(typeKey, w, h, {
+                triplekType: 'triplek_3mm',
+                useKaca: true,
+                useLinen: useLinen,
+                depth3D: depth3D
+            });
+
+            if (custType === 'reseller') {
+                if (depth3D === '3cm') return useLinen ? res.r3DYes : res.r3DNo;
+                if (depth3D === '5cm') return (useLinen ? res.rYes : res.rNo) + res.extra3D_5cm;
+                return useLinen ? res.rYes : res.rNo;
+            } else {
+                if (depth3D === '3cm') return useLinen ? res.k3DYes : res.k3DNo;
+                if (depth3D === '5cm') return (useLinen ? res.kYes : res.kNo) + res.extra3D_5cm;
+                return useLinen ? res.kYes : res.kNo;
+            }
+        }
+
+        window.addPricelistItemToCart = function(sizeLabel, width, height, typeKey) {
+            const filterCust = window.appState.pricelistFilterCustomer || 'konsumen';
+            const isLinen = window.appState.pricelistFilterLinen || false;
+            const depth3D = window.appState.pricelistFilter3D || 'none';
+            const isReseller = filterCust === 'reseller';
+
+            const unitPrice = getPricelistFramePrice(typeKey, width, height, isReseller ? 'reseller' : 'konsumen', isLinen, depth3D);
+            const stick = window.appState.rates.sticks[typeKey] || window.appState.rates.sticks['tipe_1'];
+
+            let specsNote = [];
+            if (isLinen) specsNote.push('Plus Linen');
+            if (depth3D === '3cm') specsNote.push('3D Box 3cm');
+            if (depth3D === '5cm') specsNote.push('3D Box 5cm');
+            const noteText = specsNote.length > 0 ? specsNote.join(' + ') : 'Standard';
+
+            const cartItem = {
+                id: Date.now().toString(),
+                name: `${stick.name} (${sizeLabel}) [${noteText}]`,
+                sizeLabel: sizeLabel,
+                quantity: 1,
+                unitPrice: unitPrice,
+                totalPrice: unitPrice,
+                useLinen: isLinen,
+                depth3D: depth3D,
+                frameCode: '',
+                notes: `Daftar Harga Standar (${isReseller ? 'Reseller' : 'Konsumen'})`
+            };
+
+            window.appState.cart.push(cartItem);
+            updateCartBadge();
+            showToast(`Produk ${stick.name} (${sizeLabel}) ditambahkan ke keranjang!`, 'success');
         };
 
         window.renderPricelistTable = function() {
@@ -2628,6 +2732,10 @@
             const typeFilter = document.getElementById('pricelist-select-type')?.value || 'all';
 
             if (!bodyEl || !headerEl) return;
+
+            const filterCust = window.appState.pricelistFilterCustomer || 'all';
+            const isLinen = window.appState.pricelistFilterLinen || false;
+            const depth3D = window.appState.pricelistFilter3D || 'none';
 
             const sizes = (window.appState.standardSizes || []).filter(s => {
                 const label = (s.label || `${s.width}x${s.height} cm`).toLowerCase();
@@ -2640,21 +2748,57 @@
                 ? Object.keys(window.appState.rates.sticks)
                 : [typeFilter];
 
-            // Header construction
-            let headerHTML = `<th class="p-2.5">UKURAN</th>`;
+            // Header construction with dynamic stick width (cm)
+            let headerHTML = `<th class="p-2.5">UKURAN / PRESET</th>`;
             typeKeys.forEach(k => {
                 const st = window.appState.rates.sticks[k];
-                headerHTML += `<th class="p-2.5 text-center">${st.name}</th>`;
+                headerHTML += `<th class="p-2.5 text-center">${st.name} (${st.widthCm} cm)</th>`;
             });
+            headerHTML += `<th class="p-2.5 text-center">AKSI</th>`;
             headerEl.innerHTML = headerHTML;
 
             // Rows construction
             bodyEl.innerHTML = sizes.map(s => {
-                let row = `<tr class="hover:bg-slate-50 border-b border-slate-100"><td class="p-2.5 font-bold text-slate-800">${s.label || `${s.width}x${s.height} cm`}</td>`;
+                const labelText = s.label || `${s.width}x${s.height} cm`;
+                let row = `<tr class="hover:bg-slate-50 border-b border-slate-100">
+                    <td class="p-2.5 font-bold text-slate-800">${labelText}</td>`;
+                
                 typeKeys.forEach(k => {
-                    const res = calculateSingleFramePrice(k, s.width, s.height, { triplekType: 'triplek_3mm', useKaca: true, useLinen: false, depth3D: 'none' });
-                    row += `<td class="p-2.5 text-center font-mono font-bold text-slate-800">${formatRp(res.kNo)}</td>`;
+                    let priceDisplay = '';
+                    if (filterCust === 'reseller') {
+                        const price = getPricelistFramePrice(k, s.width, s.height, 'reseller', isLinen, depth3D);
+                        priceDisplay = `<span class="text-emerald-700 font-extrabold">${formatRp(price)}</span>`;
+                    } else if (filterCust === 'konsumen') {
+                        const price = getPricelistFramePrice(k, s.width, s.height, 'konsumen', isLinen, depth3D);
+                        priceDisplay = `<span class="text-amber-800 font-extrabold">${formatRp(price)}</span>`;
+                    } else {
+                        // All Customers
+                        const priceK = getPricelistFramePrice(k, s.width, s.height, 'konsumen', isLinen, depth3D);
+                        const priceR = getPricelistFramePrice(k, s.width, s.height, 'reseller', isLinen, depth3D);
+                        priceDisplay = `<div class="text-[10px] leading-tight">
+                            <span class="text-amber-800 font-bold block">K: ${formatRp(priceK)}</span>
+                            <span class="text-emerald-700 font-bold block">R: ${formatRp(priceR)}</span>
+                        </div>`;
+                    }
+
+                    row += `<td class="p-2.5 text-center font-mono font-bold">${priceDisplay}</td>`;
                 });
+
+                const actionTypeKey = typeKeys[0] || 'tipe_1';
+
+                row += `<td class="p-2.5 text-center">
+                    <div class="flex items-center justify-center space-x-1.5">
+                        <button type="button" onclick="addPricelistItemToCart('${labelText}', ${s.width}, ${s.height}, '${actionTypeKey}')" title="+ Masukkan Keranjang" class="p-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold transition-all shadow-sm flex items-center space-x-1">
+                            <i class="fa-solid fa-cart-plus"></i>
+                            <span class="hidden sm:inline text-[11px]">Keranjang</span>
+                        </button>
+                        <button type="button" onclick="addPricelistItemToCart('${labelText}', ${s.width}, ${s.height}, '${actionTypeKey}'); openCheckoutModal();" title="Beli / Checkout Langsung" class="p-1.5 bg-amber-500 hover:bg-amber-600 text-slate-950 rounded-lg text-xs font-extrabold transition-all shadow-sm flex items-center space-x-1">
+                            <i class="fa-solid fa-bolt"></i>
+                            <span class="hidden sm:inline text-[11px]">Checkout</span>
+                        </button>
+                    </div>
+                </td>`;
+
                 row += `</tr>`;
                 return row;
             }).join('');
